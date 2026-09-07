@@ -1,0 +1,51 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080808"/><stop offset="1" stop-color="#161411"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b8a47a"/><stop offset="1" stop-color="#6f5d3d"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-opacity=".55"/></filter>
+  <style>
+    .title{font:800 54px Georgia,serif;letter-spacing:5px;fill:#eee8db}.small{font:700 12px Arial,sans-serif;letter-spacing:4px;fill:#b8a47a}.muted{font:600 11px Arial,sans-serif;letter-spacing:2px;fill:#8e897f}.piece{font:70px Georgia,serif;dominant-baseline:middle;text-anchor:middle}.light{fill:#aaa291}.dark{fill:#292722}.white{fill:#eee9df;stroke:#8e8779;stroke-width:1}.black{fill:#0b0b0b;stroke:#47443c;stroke-width:1}.line{stroke:#b8a47a;stroke-opacity:.35}.blood{fill:#9e2e2e}
+  </style>
+</defs>
+<rect width="1200" height="630" fill="url(#bg)"/>
+<circle cx="1010" cy="105" r="140" fill="#9e2e2e" opacity=".07"/>
+<text x="70" y="70" class="small">THE BLACK CROWN</text>
+<text x="70" y="128" class="title">EVERY MOVE LEAVES A MARK.</text>
+<text x="70" y="163" class="muted">A GOTHIC CHESS ARENA BUILT FOR THE BROWSER</text>
+<g transform="translate(70 205)" filter="url(#shadow)">
+  <rect width="520" height="350" rx="3" fill="#11110f" stroke="#b8a47a" stroke-opacity=".25"/>
+  <g transform="translate(28 28)">
+    <g id="squares">
+      <rect x="0" y="0" width="58" height="58" class="light"/><rect x="58" y="0" width="58" height="58" class="dark"/><rect x="116" y="0" width="58" height="58" class="light"/><rect x="174" y="0" width="58" height="58" class="dark"/><rect x="232" y="0" width="58" height="58" class="light"/><rect x="290" y="0" width="58" height="58" class="dark"/><rect x="348" y="0" width="58" height="58" class="light"/><rect x="406" y="0" width="58" height="58" class="dark"/>
+      <rect x="0" y="58" width="58" height="58" class="dark"/><rect x="58" y="58" width="58" height="58" class="light"/><rect x="116" y="58" width="58" height="58" class="dark"/><rect x="174" y="58" width="58" height="58" class="light"/><rect x="232" y="58" width="58" height="58" class="dark"/><rect x="290" y="58" width="58" height="58" class="light"/><rect x="348" y="58" width="58" height="58" class="dark"/><rect x="406" y="58" width="58" height="58" class="light"/>
+      <rect x="0" y="116" width="58" height="58" class="light"/><rect x="58" y="116" width="58" height="58" class="dark"/><rect x="116" y="116" width="58" height="58" class="light"/><rect x="174" y="116" width="58" height="58" class="dark"/><rect x="232" y="116" width="58" height="58" class="light"/><rect x="290" y="116" width="58" height="58" class="dark"/><rect x="348" y="116" width="58" height="58" class="light"/><rect x="406" y="116" width="58" height="58" class="dark"/>
+      <rect x="0" y="174" width="58" height="58" class="dark"/><rect x="58" y="174" width="58" height="58" class="light"/><rect x="116" y="174" width="58" height="58" class="dark"/><rect x="174" y="174" width="58" height="58" class="light"/><rect x="232" y="174" width="58" height="58" class="dark"/><rect x="290" y="174" width="58" height="58" class="light"/><rect x="348" y="174" width="58" height="58" class="dark"/><rect x="406" y="174" width="58" height="58" class="light"/>
+      <rect x="0" y="232" width="58" height="58" class="light"/><rect x="58" y="232" width="58" height="58" class="dark"/><rect x="116" y="232" width="58" height="58" class="light"/><rect x="174" y="232" width="58" height="58" class="dark"/><rect x="232" y="232" width="58" height="58" class="light"/><rect x="290" y="232" width="58" height="58" class="dark"/><rect x="348" y="232" width="58" height="58" class="light"/><rect x="406" y="232" width="58" height="58" class="dark"/>
+      <rect x="0" y="290" width="58" height="30" class="dark"/><rect x="58" y="290" width="58" height="30" class="light"/><rect x="116" y="290" width="58" height="30" class="dark"/><rect x="174" y="290" width="58" height="30" class="light"/><rect x="232" y="290" width="58" height="30" class="dark"/><rect x="290" y="290" width="58" height="30" class="light"/><rect x="348" y="290" width="58" height="30" class="dark"/><rect x="406" y="290" width="58" height="30" class="light"/>
+    </g>
+    <text x="29" y="28" class="piece black">♜</text><text x="87" y="28" class="piece black">♞</text><text x="145" y="28" class="piece black">♝</text><text x="203" y="28" class="piece black">♛</text><text x="261" y="28" class="piece black">♚</text><text x="319" y="28" class="piece black">♝</text><text x="377" y="28" class="piece black">♞</text><text x="435" y="28" class="piece black">♜</text>
+    <text x="29" y="86" class="piece black">♟</text><text x="87" y="86" class="piece black">♟</text><text x="145" y="86" class="piece black">♟</text><text x="203" y="86" class="piece black">♟</text><text x="319" y="86" class="piece black">♟</text><text x="377" y="86" class="piece black">♟</text><text x="435" y="86" class="piece black">♟</text>
+    <text x="145" y="202" class="piece white" filter="url(#glow)"><animate attributeName="x" values="145;145;261;261" keyTimes="0;.3;.58;1" dur="5s" repeatCount="indefinite"/></text>
+    <text x="261" y="202" class="piece white" opacity="0">♗<animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.3;.7;1" dur="5s" repeatCount="indefinite"/></text>
+    <text x="145" y="260" class="piece white">♙</text><text x="203" y="260" class="piece white">♙</text><text x="261" y="260" class="piece white">♙</text><text x="319" y="260" class="piece white">♙</text>
+    <text x="29" y="318" class="piece white">♖</text><text x="87" y="318" class="piece white">♘</text><text x="145" y="318" class="piece white">♗</text><text x="203" y="318" class="piece white">♕</text><text x="261" y="318" class="piece white">♔</text><text x="377" y="318" class="piece white">♘</text><text x="435" y="318" class="piece white">♖</text>
+    <circle cx="261" cy="86" r="7" class="blood"><animate attributeName="r" values="3;10;3" dur="1.8s" repeatCount="indefinite"/></circle>
+  </g>
+</g>
+<g transform="translate(655 218)">
+  <text x="0" y="0" class="small">THE CHRONICLE</text>
+  <line x1="0" y1="18" x2="440" y2="18" class="line"/>
+  <text x="0" y="54" class="muted">01</text><text x="50" y="54" style="font:700 18px Georgia,serif;fill:#eee8db">e4</text><text x="220" y="54" class="muted">…WHITE OPENS</text>
+  <text x="0" y="96" class="muted">02</text><text x="50" y="96" style="font:700 18px Georgia,serif;fill:#eee8db">e5</text><text x="220" y="96" class="muted">…BLACK ANSWERS</text>
+  <text x="0" y="138" class="muted">03</text><text x="50" y="138" style="font:700 18px Georgia,serif;fill:#eee8db">♗</text><text x="220" y="138" class="blood">THE CROWN STIRS</text>
+  <rect x="0" y="180" width="440" height="1" class="line"/>
+  <text x="0" y="219" class="small">FEATURES</text>
+  <text x="0" y="255" class="muted">DRAG-FREE CLICK CHESS</text>
+  <text x="0" y="285" class="muted">LEGAL MOVE HIGHLIGHTS</text>
+  <text x="0" y="315" class="muted">CROWN AI OPPONENT</text>
+  <text x="0" y="345" class="muted">MOVE CHRONICLE + CAPTURES</text>
+  <text x="0" y="375" class="muted">LOCAL SAVE + BOARD FLIP</text>
+  <text x="0" y="430" style="font:italic 20px Georgia,serif;fill:#b8a47a">“Do not confuse silence with mercy.”</text>
+</g>
+</svg>

@@ -1,0 +1,37 @@
+<svg width="1100" height="360" viewBox="0 0 1100 360" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070707"/><stop offset="1" stop-color="#181612"/></linearGradient>
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eee8db"/><stop offset="1" stop-color="#8d877b"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <style>.s{font:700 11px Arial,sans-serif;letter-spacing:3px;fill:#8e897f}.t{font:800 28px Georgia,serif;letter-spacing:2px;fill:#eee8db}.g{fill:#b8a47a}.r{fill:#9e2e2e}.l{stroke:#b8a47a;stroke-opacity:.25}</style>
+</defs>
+<rect width="1100" height="360" fill="url(#bg)"/>
+<rect x="24" y="24" width="1052" height="312" fill="none" stroke="#b8a47a" stroke-opacity=".16"/>
+<text x="58" y="65" class="s">01 / THE BOARD AWAKENS</text>
+<text x="58" y="101" class="t">WATCH THE POSITION COME ALIVE.</text>
+<g transform="translate(58 128)">
+  <rect width="320" height="160" fill="#11110f" stroke="#eee8db" stroke-opacity=".11"/>
+  <g opacity=".95">
+    <path d="M20 0H40M20 20H40M20 40H40M20 60H40M20 80H40M20 100H40M20 120H40M20 140H40" stroke="#b8a47a" stroke-opacity=".25"/>
+    <rect x="40" y="0" width="35" height="35" fill="#aaa291"/><rect x="75" y="0" width="35" height="35" fill="#292722"/><rect x="110" y="0" width="35" height="35" fill="#aaa291"/><rect x="145" y="0" width="35" height="35" fill="#292722"/><rect x="180" y="0" width="35" height="35" fill="#aaa291"/><rect x="215" y="0" width="35" height="35" fill="#292722"/><rect x="250" y="0" width="35" height="35" fill="#aaa291"/>
+    <rect x="40" y="35" width="35" height="35" fill="#292722"/><rect x="75" y="35" width="35" height="35" fill="#aaa291"/><rect x="110" y="35" width="35" height="35" fill="#292722"/><rect x="145" y="35" width="35" height="35" fill="#aaa291"/><rect x="180" y="35" width="35" height="35" fill="#292722"/><rect x="215" y="35" width="35" height="35" fill="#aaa291"/><rect x="250" y="35" width="35" height="35" fill="#292722"/>
+    <rect x="40" y="70" width="35" height="35" fill="#aaa291"/><rect x="75" y="70" width="35" height="35" fill="#292722"/><rect x="110" y="70" width="35" height="35" fill="#aaa291"/><rect x="145" y="70" width="35" height="35" fill="#292722"/><rect x="180" y="70" width="35" height="35" fill="#aaa291"/><rect x="215" y="70" width="35" height="35" fill="#292722"/><rect x="250" y="70" width="35" height="35" fill="#aaa291"/>
+    <rect x="40" y="105" width="35" height="35" fill="#292722"/><rect x="75" y="105" width="35" height="35" fill="#aaa291"/><rect x="110" y="105" width="35" height="35" fill="#292722"/><rect x="145" y="105" width="35" height="35" fill="#aaa291"/><rect x="180" y="105" width="35" height="35" fill="#292722"/><rect x="215" y="105" width="35" height="35" fill="#aaa291"/><rect x="250" y="105" width="35" height="35" fill="#292722"/>
+    <rect x="40" y="140" width="35" height="20" fill="#aaa291"/><rect x="75" y="140" width="35" height="20" fill="#292722"/><rect x="110" y="140" width="35" height="20" fill="#aaa291"/><rect x="145" y="140" width="35" height="20" fill="#292722"/><rect x="180" y="140" width="35" height="20" fill="#aaa291"/><rect x="215" y="140" width="35" height="20" fill="#292722"/><rect x="250" y="140" width="35" height="20" fill="#aaa291"/>
+  </g>
+  <circle cx="202" cy="52" r="16" fill="#9e2e2e" opacity=".17"><animate attributeName="r" values="6;30;6" dur="2s" repeatCount="indefinite"/></circle>
+  <text x="55" y="30" font-size="31" fill="#0b0b0b">♜</text><text x="90" y="30" font-size="31" fill="#0b0b0b">♞</text><text x="125" y="30" font-size="31" fill="#0b0b0b">♝</text><text x="160" y="30" font-size="31" fill="#0b0b0b">♛</text><text x="195" y="30" font-size="31" fill="#0b0b0b">♚</text>
+  <text x="155" y="100" font-size="36" fill="url(#metal)"><animateTransform attributeName="transform" type="translate" values="0 0;35 0;35 0;0 0" dur="4.2s" repeatCount="indefinite"/></text>
+</g>
+<g transform="translate(440 140)">
+  <text y="0" class="s">SYSTEM</text><text y="36" class="g" font-family="Georgia" font-size="30">SELECT</text><line y1="51" x2="260" class="l"/>
+  <circle cx="278" cy="-4" r="5" class="g"><animate attributeName="opacity" values="1;.3;1" dur="1.7s" repeatCount="indefinite"/></circle>
+  <text y="78" class="s">LEGAL MOVES</text><text y="111" class="t">HIGHLIGHTED</text>
+  <text y="147" class="s">TRANSITION</text><text y="180" class="t">LAND / CAPTURE / CHECK</text>
+</g>
+<g transform="translate(800 140)">
+  <text y="0" class="s">THE CROWN</text><text y="38" font-family="Georgia" font-size="38" class="g">♛</text>
+  <text x="0" y="78" class="s">BLACK AI</text><text x="0" y="108" class="t">THINKING…</text>
+  <path d="M0 127h250" class="l"/><path d="M0 127h250" stroke="#9e2e2e" stroke-width="2" stroke-dasharray="22 34"><animate attributeName="stroke-dashoffset" from="56" to="0" dur="1.8s" repeatCount="indefinite"/></path>
+</g>
+</svg>

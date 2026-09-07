@@ -1,0 +1,33 @@
+<svg width="1100" height="330" viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#090909"/><stop offset="1" stop-color="#16130f"/></linearGradient>
+  <style>.s{font:700 11px Arial,sans-serif;letter-spacing:3px;fill:#8e897f}.t{font:800 28px Georgia,serif;letter-spacing:2px;fill:#eee8db}.g{fill:#b8a47a}.r{fill:#9e2e2e}.line{stroke:#b8a47a;stroke-opacity:.23}</style>
+</defs>
+<rect width="1100" height="330" fill="url(#bg)"/><rect x="22" y="22" width="1056" height="286" fill="none" stroke="#b8a47a" stroke-opacity=".14"/>
+<text x="58" y="66" class="s">02 / THE CHRONICLE</text><text x="58" y="103" class="t">THE GAME LEAVES A PAPER TRAIL.</text>
+<g transform="translate(58 132)">
+  <rect width="450" height="136" fill="#0d0d0c" stroke="#eee8db" stroke-opacity=".1"/>
+  <text x="22" y="27" class="s">MOVE LOG</text><text x="370" y="27" class="s">PLY</text>
+  <line x1="20" y1="38" x2="430" y2="38" class="line"/>
+  <g font-family="Georgia" font-size="19" fill="#eee8db">
+    <text x="25" y="68">01</text><text x="75" y="68">e4</text><text x="225" y="68">e5</text>
+    <text x="25" y="98">02</text><text x="75" y="98">♗b5</text><text x="225" y="98">♞c6</text>
+    <text x="25" y="128">03</text><text x="75" y="128" class="g">♕h5</text><text x="225" y="128" class="r">…CHECK</text>
+  </g>
+  <rect x="65" y="48" width="68" height="25" fill="#b8a47a" opacity=".12"><animate attributeName="x" values="65;215;65" dur="4.6s" repeatCount="indefinite"/></rect>
+</g>
+<g transform="translate(580 145)">
+  <text class="s">CAPTURE EVENT</text>
+  <text y="45" font-size="45" fill="#eee8db">♟</text>
+  <text x="58" y="43" font-size="22" class="r">×</text>
+  <text x="95" y="45" font-size="45" fill="#0b0b0b">♘</text>
+  <circle cx="76" cy="25" r="4" class="r"><animate attributeName="r" values="3;13;3" dur="1.5s" repeatCount="indefinite"/></circle>
+  <text y="90" class="t" font-size="18">ONE PIECE GONE.</text>
+  <text y="117" class="s">CAPTURE COUNT +1</text>
+</g>
+<g transform="translate(850 145)">
+  <text class="s">CHECK</text><text y="48" font-size="50" class="r">♚</text>
+  <path d="M0 62h190" class="line"/><path d="M0 62h190" stroke="#9e2e2e" stroke-width="2" stroke-dasharray="6 11"><animate attributeName="stroke-dashoffset" from="17" to="0" dur=".7s" repeatCount="indefinite"/></path>
+  <text y="92" class="t">THE AURA RISES.</text>
+</g>
+</svg>
