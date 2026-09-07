@@ -10,76 +10,86 @@
 
 <div align="center">
 
-**[PLAY THE ARENA](../../)** · **[WATCH THE SOURCE](../../tree/main)**
+**[PLAY THE ARENA](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN)** · **[OPEN THE CODE](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/tree/main)** · **[VIEW THE BUILD PR](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/pull/1)**
 
 </div>
 
 ---
 
-## The idea
+## The first scene
 
-**THE BLACK CROWN** is a browser-first chess experience with a deliberately theatrical interface. The board is the hero. The interface behaves like a chronicle around it: players, captures, moves, state, and the little moments that make a game feel alive.
+The Black Crown is not trying to be another clean, friendly chess widget.
 
-The first build is intentionally dependency-light: a static frontend, a real chess rules engine loaded from a pinned browser module, and browser storage for local persistence.
+It is a **browser-first chess experience** with theatrical motion, archival typography, a dark material palette and a board that behaves like the central artifact of the page.
 
-### What is already alive
+The interface is intentionally built around the feeling of **watching a game happen**, not filling out a dashboard.
 
-| System | What it does |
+## Watch the systems move
+
+### I. The board awakens
+
+<p align="center"><img src="assets/01-board-awakens.svg" alt="Animated walkthrough of board selection, legal moves and Crown AI state" width="100%" /></p>
+
+A click selects a piece. The board immediately reveals legal targets. Moving a piece creates a landing beat. A capture gets its own visual and audio cue. A checked king gets an aura instead of a tiny status label buried somewhere on the screen.
+
+### II. The chronicle remembers
+
+<p align="center"><img src="assets/02-chronicle.svg" alt="Animated walkthrough of move log, captures and check state" width="100%" /></p>
+
+Every move becomes part of the chronicle. Captures remain visible. The latest move is highlighted. The board state is always inspectable. The idea is simple: **the game should leave evidence behind.**
+
+### III. The Crown thinks
+
+<p align="center"><img src="assets/03-crown-ai.svg" alt="Animated walkthrough of Crown AI evaluating a chess position" width="100%" /></p>
+
+The optional Black opponent uses a lightweight heuristic over legal moves, considering material, central squares and tactical signals. It is deliberately transparent and easy to replace with a stronger engine later.
+
+**AI** means **Artificial Intelligence**.
+
+---
+
+## What is alive right now
+
+| System | Experience |
 | --- | --- |
-| ♟ **Real chess** | Legal moves, check, checkmate, draws, castling, promotion, en passant and move history are handled by the chess engine. |
-| ♛ **Crown AI** | Optional Black opponent that chooses legal moves using a lightweight material, center-control and tactical heuristic. AI means **Artificial Intelligence**. |
-| ◈ **Move theatre** | Selected squares, legal targets, captures, check states and landing animations turn every move into a visible event. |
-| ◌ **The Chronicle** | Move log, captured pieces, checks, captures and board state stay visible beside the board. |
-| ↻ **Orientation** | Flip the board instantly without losing the game. |
-| ⌂ **Local memory** | The current game is restored from browser local storage after a refresh. |
-| ◒ **Atmosphere** | Grain, dust, vignette, tiny sound cues and a restrained gothic palette build the world around the game. |
+| ♟ **Real chess rules** | Legal moves, check, checkmate, draws, castling, promotion, en passant and history are delegated to Chess.js. |
+| ♛ **Crown AI** | Optional Black opponent with a small tactical heuristic. |
+| ◈ **Move theatre** | Selected squares, legal targets, captures, check aura and piece landing animation. |
+| ◌ **The Chronicle** | Move log, captured pieces, checks, captures and current board state. |
+| ↻ **Board flip** | Swap player orientation without restarting the game. |
+| ⌂ **Local memory** | The current position survives refresh through browser storage. |
+| ◒ **Atmosphere** | Grain, dust, vignette, typography, shadows and Web Audio move cues. |
+| 📱 **Responsive UI** | The composition collapses cleanly for smaller screens instead of shrinking everything into unusable controls. |
 
 ---
 
-## The visual language
-
-The design is built around four rules:
-
-**1. The board wins.** Nothing competes with it for attention.
-
-**2. Information feels discovered.** The move log and player state are treated like archival notes, not dashboard widgets.
-
-**3. Motion has meaning.** A piece landing, a capture, a check or a game ending should feel different.
-
-**4. Darkness is a material, not just a color.** Grain, shadows, restrained gold, muted paper tones and small red accents create depth without turning the board into a neon game interface.
-
----
-
-## How the pieces fit together
+## The architecture
 
 ```text
-┌─────────────────────────────────────────────┐
-│                 THE BLACK CROWN              │
-├─────────────────────────────────────────────┤
-│                                             │
-│  UI / Atmosphere                            │
-│  index.html + styles.css                   │
-│           │                                 │
-│           ▼                                 │
-│  Interaction layer                         │
-│  app.js                                    │
-│     │          │             │              │
-│     ▼          ▼             ▼              │
-│  Chess.js   Local Save    Web Audio         │
-│  rules      FEN state     move cues         │
-│                                             │
-└─────────────────────────────────────────────┘
+                         THE BLACK CROWN
+                                │
+             ┌──────────────────┴──────────────────┐
+             │                                     │
+        PRESENTATION                           GAME CORE
+     index.html + CSS                            app.js
+             │                                     │
+      ┌──────┼──────┐                 ┌───────────┼───────────┐
+      ▼      ▼      ▼                 ▼           ▼           ▼
+   layout  motion  mood            Chess.js   local state   audio
+                                        │
+                                        ▼
+                               legal position state
 ```
 
-**FEN** means **Forsyth-Edwards Notation**, the compact string used here to preserve the current board position.
+The initial implementation deliberately avoids a server and framework overhead. The game is a static site with a real chess rules engine loaded as a pinned **ECMAScript Module (ESM)**.
 
-There is no application server in this first foundation pass. That keeps the prototype easy to deploy, easy to inspect and easy to evolve into a richer multiplayer system later.
+The saved position is represented using **Forsyth-Edwards Notation (FEN)**, a compact standard notation for describing a chess position.
+
+That architecture leaves a clean seam for the next generation: multiplayer rooms, authoritative server validation, profiles, spectators and replay.
 
 ---
 
-## Run it
-
-Because the project is static, you can open `index.html` with a local static server.
+## Run it locally
 
 ```bash
 git clone https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN.git
@@ -87,13 +97,9 @@ cd THE-BLACK-CROWN
 python3 -m http.server 4173
 ```
 
-Then open:
+Open `http://localhost:4173`.
 
-```text
-http://localhost:4173
-```
-
-A static server is recommended because the chess engine is imported as an **ECMAScript Module (ESM)**.
+A static server is recommended because the browser loads the chess engine as an ECMAScript Module.
 
 ---
 
@@ -104,8 +110,12 @@ THE-BLACK-CROWN/
 ├── index.html
 ├── styles.css
 ├── app.js
+├── favicon.svg
 ├── assets/
-│   └── black-crown-demo.svg
+│   ├── black-crown-demo.svg
+│   ├── 01-board-awakens.svg
+│   ├── 02-chronicle.svg
+│   └── 03-crown-ai.svg
 └── .github/
     └── workflows/
         └── deploy-pages.yml
@@ -113,48 +123,58 @@ THE-BLACK-CROWN/
 
 ---
 
-## What comes next
+## Design doctrine
 
-The foundation is deliberately small so the next layer can be ambitious without fighting a throwaway architecture.
+**The board wins.** The surrounding UI exists to frame the decision, not fight it.
 
-### Act II — make the game feel dangerous
+**Motion has meaning.** A hover, move, capture, check and checkmate should not all feel like the same animation.
 
-- proper drag-and-drop piece movement
-- promotion choice modal instead of automatic queen promotion
-- richer capture and check animations
-- clock system with dramatic time states
-- opening names and game metadata
-- save/load named games
-- replay mode that can literally play the match back in the README/demo style
+**Information feels discovered.** The move log is a chronicle. Player state is a ritual. Captures are evidence.
+
+**Darkness has texture.** The palette uses warm paper tones, muted metal, restrained red and layered shadows instead of generic black gradients.
+
+**The interface is a stage.** On mobile, desktop and future multiplayer screens, the goal remains the same: make the person feel that something important is happening on the board.
+
+---
+
+## The roadmap
+
+### Act II — make the game dangerous
+
+- drag-and-drop movement with tactile transitions
+- real promotion choice modal
+- chess clock with pressure states
+- stronger Crown AI with difficulty personalities
+- opening recognition
+- replay mode with cinematic move playback
+- named local game saves
 
 ### Act III — build the arena
 
 - online rooms
+- private match links
 - friend invites
-- spectators
+- spectator mode
+- reconnect and resume
 - persistent player profiles
-- game links that reconstruct a position
-- server-authoritative move validation
-- reconnect and resume support
+- server-authoritative validation
 
-### Act IV — crown the experience
+### Act IV — build the mythology
 
-- stronger engine opponent
-- difficulty personalities
-- opening repertoire
-- thematic boards and piece sets
+- multiple board materials and piece sets
+- reactive soundscape
 - achievements and match history
-- soundscape and reactive ambience
-- cinematic game-over sequences
-
-The important part: **the current board is already a real game, not a mockup.**
+- opening repertoire
+- cinematic checkmate sequences
+- shareable game stories
+- animated replay exports for documentation and social content
 
 ---
 
 ## Status
 
-**Foundation build — playable.**
+**Foundation build · playable · under active development**
 
-The repository started as a one-line README. This pass establishes the actual game shell, chess interaction layer, atmosphere, persistence, an optional Artificial Intelligence opponent, an animated repository preview and GitHub Pages deployment.
+The repository began as a one-line README. The first build now establishes the game shell, responsive UI, chess interaction layer, local persistence, optional Artificial Intelligence opponent, animated README storytelling and a GitHub Pages deployment path. The current work lives in **PR #1** so the foundation can be reviewed before it reaches `main`.
 
-Built for experimentation. Designed to grow teeth.
+> **Built for experimentation. Designed to grow teeth.**

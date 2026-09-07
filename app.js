@@ -1,47 +1,41 @@
 import { Chess } from 'https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm';
 
 const game = new Chess();
-const board = document.querySelector('#board');
-const fileCoords = document.querySelector('#fileCoords');
-const rankCoords = document.querySelector('#rankCoords');
-const gameStatus = document.querySelector('#gameStatus');
-const moveCounter = document.querySelector('#moveCounter');
-const moveList = document.querySelector('#moveList');
-const moveTotal = document.querySelector('#moveTotal');
-const fenLabel = document.querySelector('#fenLabel');
-const checkCount = document.querySelector('#checkCount');
-const captureCount = document.querySelector('#captureCount');
-const halfClock = document.querySelector('#halfClock');
-const whiteCaptures = document.querySelector('#whiteCaptures');
-const blackCaptures = document.querySelector('#blackCaptures');
-const whiteCaptureCount = document.querySelector('#whiteCaptureCount');
-const blackCaptureCount = document.querySelector('#blackCaptureCount');
-const whiteCard = document.querySelector('#whiteCard');
-const blackCard = document.querySelector('#blackCard');
-const whiteStatus = document.querySelector('#whiteStatus');
-const blackStatus = document.querySelector('#blackStatus');
-const aiToggle = document.querySelector('#aiToggle');
-const checkAura = document.querySelector('#checkAura');
-const resultOverlay = document.querySelector('#resultOverlay');
-const resultTitle = document.querySelector('#resultTitle');
-const resultCopy = document.querySelector('#resultCopy');
-const taunt = document.querySelector('#taunt');
 
-const files = ['a','b','c','d','e','f','g','h'];
-const ranks = ['8','7','6','5','4','3','2','1'];
+const $ = (selector) => document.querySelector(selector);
+const board = $('#board');
+const fileCoords = $('#fileCoords');
+const rankCoords = $('#rankCoords');
+const gameStatus = $('#gameStatus');
+const moveCounter = $('#moveCounter');
+const moveList = $('#moveList');
+const moveTotal = $('#moveTotal');
+const fenLabel = $('#fenLabel');
+const checkCount = $('#checkCount');
+const captureCount = $('#captureCount');
+const halfClock = $('#halfClock');
+const whiteCaptures = $('#whiteCaptures');
+const blackCaptures = $('#blackCaptures');
+const whiteCaptureCount = $('#whiteCaptureCount');
+const blackCaptureCount = $('#blackCaptureCount');
+const whiteCard = $('#whiteCard');
+const blackCard = $('#blackCard');
+const whiteStatus = $('#whiteStatus');
+const blackStatus = $('#blackStatus');
+const aiToggle = $('#aiToggle');
+const checkAura = $('#checkAura');
+const resultOverlay = $('#resultOverlay');
+const resultTitle = $('#resultTitle');
+const resultCopy = $('#resultCopy');
+const taunt = $('#taunt');
+
+const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
 const pieceGlyph = {
-  w: { k:'♔', q:'♕', r:'♖', b:'♗', n:'♘', p:'♙' },
-  b: { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' },
+  w: { k: '♔', q: '♕', r: '♖', b: '♗', n: '♘', p: '♙' },
+  b: { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' },
 };
-
-let orientation = 'white';
-let selectedSquare = null;
-let lastMove = null;
-let checkEvents = 0;
-let captureEvents = 0;
-let movingSquare = null;
-let aiThinking = false;
-
+const pieceValue = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 100 };
 const taunts = [
   '“Do not confuse silence with mercy.”',
   '“The board has no sympathy for hesitation.”',
@@ -50,83 +44,150 @@ const taunts = [
   '“There is always one square you forgot.”',
 ];
 
-function makeDust() {
-  const dust = document.querySelector('#dust');
+let orientation = 'white';
+let selectedSquare = null;
+let lastMove = null;
+let movingSquare = null;
+let aiThinking = false;
+let checkEvents = 0;
+let captureEvents = 0;
+
+function buildDust() {
+  const dust = $('#dust');
+  const fragment = document.createDocumentFragment();
   for (let i = 0; i < 34; i += 1) {
-    const p = document.createElement('i');
-    p.style.left = `${Math.random() * 100}%`;
-    p.style.animationDuration = `${9 + Math.random() * 16}s`;
-    p.style.animationDelay = `${-Math.random() * 18}s`;
-    p.style.opacity = `${0.15 + Math.random() * 0.45}`;
-    dust.appendChild(p);
+    const particle = document.createElement('i');
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.animationDuration = `${9 + Math.random() * 16}s`;
+    particle.style.animationDelay = `${-Math.random() * 18}s`;
+    particle.style.opacity = `${0.15 + Math.random() * 0.45}`;
+    fragment.appendChild(particle);
   }
+  dust.appendChild(fragment);
+}
+
+function orderedFiles() {
+  return orientation === 'white' ? files : [...files].reverse();
+}
+
+function orderedRanks() {
+  return orientation === 'white' ? ranks : [...ranks].reverse();
 }
 
 function syncCoordinates() {
-  fileCoords.replaceChildren(...(orientation === 'white' ? files : [...files].reverse()).map((x) => {
-    const s = document.createElement('span'); s.textContent = x; return s;
+  fileCoords.replaceChildren(...orderedFiles().map((value) => {
+    const node = document.createElement('span');
+    node.textContent = value;
+    return node;
   }));
-  rankCoords.replaceChildren(...(orientation === 'white' ? ranks : [...ranks].reverse()).map((x) => {
-    const s = document.createElement('span'); s.textContent = x; return s;
+  rankCoords.replaceChildren(...orderedRanks().map((value) => {
+    const node = document.createElement('span');
+    node.textContent = value;
+    return node;
   }));
 }
 
 function visibleSquares() {
-  const out = [];
-  const fileOrder = orientation === 'white' ? files : [...files].reverse();
-  const rankOrder = orientation === 'white' ? ranks : [...ranks].reverse();
-  for (const rank of rankOrder) for (const file of fileOrder) out.push(`${file}${rank}`);
-  return out;
+  return orderedRanks().flatMap((rank) => orderedFiles().map((file) => `${file}${rank}`));
 }
 
-function render() {
+function findKing(color) {
+  for (const square of visibleSquares()) {
+    const piece = game.get(square);
+    if (piece?.color === color && piece.type === 'k') return square;
+  }
+  return null;
+}
+
+function squareIsCapture(move) {
+  return Boolean(move.captured || move.flags?.includes('e'));
+}
+
+function renderBoard() {
   syncCoordinates();
   const legalMoves = selectedSquare ? game.moves({ square: selectedSquare, verbose: true }) : [];
   const legalTargets = new Map(legalMoves.map((move) => [move.to, move]));
   const checkedKing = game.isCheck() ? findKing(game.turn()) : null;
-  const squares = visibleSquares();
-  board.replaceChildren();
+  const fragment = document.createDocumentFragment();
 
-  squares.forEach((squareName, index) => {
+  for (const squareName of visibleSquares()) {
     const fileIndex = files.indexOf(squareName[0]);
     const rankNumber = Number(squareName[1]);
-    const square = document.createElement('button');
     const piece = game.get(squareName);
-    const isLight = (fileIndex + rankNumber) % 2 === 1;
-    const legal = legalTargets.get(squareName);
+    const legalMove = legalTargets.get(squareName);
+    const square = document.createElement('button');
+    const light = (fileIndex + rankNumber) % 2 === 1;
+
     square.type = 'button';
-    square.className = `square ${isLight ? 'light' : 'dark'}`;
+    square.className = `square ${light ? 'light' : 'dark'}`;
     square.setAttribute('role', 'gridcell');
     square.setAttribute('aria-label', `${squareName}${piece ? ` ${piece.color === 'w' ? 'white' : 'black'} ${piece.type}` : ''}`);
 
     if (squareName === selectedSquare) square.classList.add('selected');
     if (lastMove && (squareName === lastMove.from || squareName === lastMove.to)) square.classList.add('last-move');
     if (checkedKing === squareName) square.classList.add('in-check');
-    if (legal) square.classList.add('legal');
-    if (legal?.captured || (legal?.flags && legal.flags.includes('e'))) square.classList.add('capture');
+    if (legalMove) square.classList.add('legal');
+    if (legalMove && squareIsCapture(legalMove)) square.classList.add('capture');
 
     if (piece) {
-      const glyph = document.createElement('span');
-      glyph.className = `piece ${piece.color === 'w' ? 'white' : 'black'}${movingSquare === squareName ? ' moving' : ''}`;
-      glyph.textContent = pieceGlyph[piece.color][piece.type];
-      glyph.setAttribute('aria-hidden', 'true');
-      square.appendChild(glyph);
+      const node = document.createElement('span');
+      node.className = `piece ${piece.color === 'w' ? 'white' : 'black'}${movingSquare === squareName ? ' moving' : ''}`;
+      node.textContent = pieceGlyph[piece.color][piece.type];
+      node.setAttribute('aria-hidden', 'true');
+      square.appendChild(node);
     }
 
     square.addEventListener('click', () => handleSquare(squareName));
-    board.appendChild(square);
-  });
+    fragment.appendChild(square);
+  }
 
+  board.replaceChildren(fragment);
   checkAura.classList.toggle('visible', Boolean(checkedKing));
   updatePanels();
 }
 
-function findKing(color) {
-  for (const squareName of files.flatMap((f) => ranks.map((r) => `${f}${r}`))) {
-    const p = game.get(squareName);
-    if (p?.color === color && p.type === 'k') return squareName;
+function updatePanels() {
+  const history = game.history({ verbose: true });
+  const turn = game.turn();
+  const fen = game.fen().split(' ');
+  const gameOver = game.isGameOver();
+
+  gameStatus.textContent = game.isCheckmate() ? 'CHECKMATE' : game.isDraw() ? 'DRAW' : turn === 'w' ? 'WHITE TO MOVE' : 'BLACK TO MOVE';
+  moveCounter.textContent = `MOVE ${String(Math.floor(history.length / 2) + 1).padStart(2, '0')}`;
+  moveTotal.textContent = `${history.length} PLY`;
+  halfClock.textContent = fen[4] || '0';
+  fenLabel.textContent = fen[0];
+  checkCount.textContent = String(checkEvents);
+  captureCount.textContent = String(captureEvents);
+
+  whiteCard.classList.toggle('active-player', turn === 'w' && !gameOver);
+  blackCard.classList.toggle('active-player', turn === 'b' && !gameOver);
+  whiteStatus.textContent = turn === 'w' && !gameOver ? 'YOUR MOVE' : game.isCheckmate() && turn === 'b' ? 'VICTOR' : 'WAITING';
+  blackStatus.textContent = game.isCheckmate() && turn === 'w'
+    ? 'VICTOR'
+    : turn === 'b' && !gameOver
+      ? (aiToggle.checked ? (aiThinking ? 'CALCULATING' : 'CROWN AI') : 'YOUR MOVE')
+      : 'WAITING';
+
+  const whiteTaken = history.filter((move) => move.color === 'w' && move.captured).map((move) => pieceGlyph.b[move.captured]);
+  const blackTaken = history.filter((move) => move.color === 'b' && move.captured).map((move) => pieceGlyph.w[move.captured]);
+  whiteCaptureCount.textContent = String(whiteTaken.length);
+  blackCaptureCount.textContent = String(blackTaken.length);
+  whiteCaptures.textContent = whiteTaken.length ? whiteTaken.join(' ') : '—';
+  blackCaptures.textContent = blackTaken.length ? blackTaken.join(' ') : '—';
+
+  moveList.replaceChildren();
+  for (let index = 0; index < history.length; index += 2) {
+    const row = document.createElement('div');
+    row.className = 'move-row';
+    row.innerHTML = [
+      `<span class="move-number">${String(index / 2 + 1).padStart(2, '0')}</span>`,
+      `<span class="move-san ${index === history.length - 1 ? 'latest' : ''}">${history[index]?.san || ''}</span>`,
+      `<span class="move-san ${index + 1 === history.length - 1 ? 'latest' : ''}">${history[index + 1]?.san || ''}</span>`,
+    ].join('');
+    moveList.appendChild(row);
   }
-  return null;
+  moveList.scrollTop = moveList.scrollHeight;
 }
 
 function handleSquare(squareName) {
@@ -134,65 +195,84 @@ function handleSquare(squareName) {
   if (aiToggle.checked && game.turn() === 'b') return;
 
   const piece = game.get(squareName);
-  const isOwnPiece = piece?.color === game.turn();
+  const ownPiece = piece?.color === game.turn();
 
   if (!selectedSquare) {
-    if (isOwnPiece) {
+    if (ownPiece) {
       selectedSquare = squareName;
       taunt.textContent = taunts[Math.floor(Math.random() * taunts.length)];
-      render();
+      renderBoard();
     }
     return;
   }
 
   if (squareName === selectedSquare) {
     selectedSquare = null;
-    render();
+    renderBoard();
     return;
   }
 
-  const legal = game.moves({ square: selectedSquare, verbose: true }).find((m) => m.to === squareName);
-  if (legal) {
+  const legalMove = game.moves({ square: selectedSquare, verbose: true }).find((move) => move.to === squareName);
+  if (legalMove) {
     playMove(selectedSquare, squareName);
     return;
   }
 
-  if (isOwnPiece) {
+  if (ownPiece) {
     selectedSquare = squareName;
-    render();
+    renderBoard();
   }
+}
+
+function persistGame() {
+  localStorage.setItem('black-crown-fen', game.fen());
+}
+
+function updateDocumentTitle() {
+  if (game.isCheckmate()) document.title = 'CHECKMATE | THE BLACK CROWN';
+  else if (game.isDraw()) document.title = 'DRAW | THE BLACK CROWN';
+  else document.title = `THE BLACK CROWN | ${game.turn() === 'w' ? 'White' : 'Black'} to move`;
 }
 
 function playMove(from, to, promotion = 'q') {
   try {
-    const before = game.fen();
     const move = game.move({ from, to, promotion });
     if (!move) return;
+
     movingSquare = to;
     lastMove = { from, to };
     selectedSquare = null;
     if (move.captured) captureEvents += 1;
     if (game.isCheck()) checkEvents += 1;
+
+    persistGame();
     playSound(move.captured ? 'capture' : 'move');
-    localStorage.setItem('black-crown-fen', game.fen());
-    localStorage.setItem('black-crown-history', JSON.stringify(game.history()));
-    render();
-    setTimeout(() => { movingSquare = null; render(); }, 460);
+    renderBoard();
+    updateDocumentTitle();
+
+    window.setTimeout(() => {
+      movingSquare = null;
+      renderBoard();
+    }, 460);
+
     if (game.isGameOver()) {
-      setTimeout(showResult, 420);
+      window.setTimeout(showResult, 420);
       return;
     }
+
     if (aiToggle.checked && game.turn() === 'b') {
       aiThinking = true;
-      gameStatus.textContent = 'THE CROWN IS THINKING…';
-      blackStatus.textContent = 'CALCULATING';
-      setTimeout(() => {
+      updatePanels();
+      window.setTimeout(() => {
         makeAiMove();
         aiThinking = false;
+        renderBoard();
       }, 650);
     }
   } catch (error) {
-    console.warn('Move rejected', error, before);
+    console.warn('Black Crown rejected a move.', error);
+    selectedSquare = null;
+    renderBoard();
   }
 }
 
@@ -202,71 +282,38 @@ function makeAiMove() {
   if (!moves.length) return;
 
   const scored = moves.map((move) => {
-    let score = (move.captured ? pieceValue(move.captured) * 10 : 0) + (move.promotion ? 80 : 0);
-    const givesCheck = move.san?.includes('+') || move.san?.includes('#');
-    if (givesCheck) score += move.san.includes('#') ? 10000 : 80;
-    score += centerBonus(move.to);
+    let score = 0;
+    if (move.captured) score += pieceValue[move.captured] * 10;
+    if (move.promotion) score += 80;
+    if (move.san?.includes('#')) score += 10000;
+    else if (move.san?.includes('+')) score += 80;
+    if (['d4', 'e4', 'd5', 'e5'].includes(move.to)) score += 6;
     score += Math.random() * 1.25;
     return { move, score };
   }).sort((a, b) => b.score - a.score);
 
-  const choice = scored[Math.floor(Math.random() * Math.min(3, scored.length))].move;
+  const pool = scored.slice(0, Math.min(3, scored.length));
+  const choice = pool[Math.floor(Math.random() * pool.length)].move;
   playMove(choice.from, choice.to, choice.promotion || 'q');
-}
-
-function centerBonus(square) {
-  return ['d4','e4','d5','e5'].includes(square) ? 6 : 0;
-}
-
-function pieceValue(type) {
-  return ({ p:1, n:3, b:3, r:5, q:9, k:100 })[type] || 0;
-}
-
-function updatePanels() {
-  const turn = game.turn();
-  gameStatus.textContent = game.isCheckmate() ? 'CHECKMATE' : game.isDraw() ? 'DRAW' : turn === 'w' ? 'WHITE TO MOVE' : 'BLACK TO MOVE';
-  moveCounter.textContent = `MOVE ${String(Math.ceil(game.history().length / 2)).padStart(2, '0')}`;
-  moveTotal.textContent = `${game.history().length} PLY`;
-  halfClock.textContent = String(game.getComment ? 0 : game.fen().split(' ')[4]);
-  fenLabel.textContent = game.fen().split(' ')[0];
-  checkCount.textContent = String(checkEvents);
-  captureCount.textContent = String(captureEvents);
-
-  whiteCard.classList.toggle('active-player', turn === 'w' && !game.isGameOver());
-  blackCard.classList.toggle('active-player', turn === 'b' && !game.isGameOver());
-  whiteStatus.textContent = turn === 'w' && !game.isGameOver() ? 'YOUR MOVE' : game.isCheckmate() && turn === 'b' ? 'VICTOR' : 'WAITING';
-  blackStatus.textContent = game.isCheckmate() && turn === 'w' ? 'VICTOR' : turn === 'b' && !game.isGameOver() ? (aiToggle.checked ? 'CROWN AI' : 'YOUR MOVE') : 'WAITING';
-
-  const verbose = game.history({ verbose: true });
-  const whiteTaken = verbose.filter((m) => m.color === 'w' && m.captured).map((m) => pieceGlyph.b[m.captured]);
-  const blackTaken = verbose.filter((m) => m.color === 'b' && m.captured).map((m) => pieceGlyph.w[m.captured]);
-  whiteCaptureCount.textContent = String(whiteTaken.length);
-  blackCaptureCount.textContent = String(blackTaken.length);
-  whiteCaptures.textContent = whiteTaken.length ? whiteTaken.join(' ') : '—';
-  blackCaptures.textContent = blackTaken.length ? blackTaken.join(' ') : '—';
-
-  moveList.replaceChildren();
-  for (let i = 0; i < verbose.length; i += 2) {
-    const row = document.createElement('div');
-    row.className = 'move-row';
-    row.innerHTML = `<span class="move-number">${String(i / 2 + 1).padStart(2, '0')}</span><span class="move-san ${i === verbose.length - 1 ? 'latest' : ''}">${verbose[i]?.san || ''}</span><span class="move-san ${i + 1 === verbose.length - 1 ? 'latest' : ''}">${verbose[i + 1]?.san || ''}</span>`;
-    moveList.appendChild(row);
-  }
-  moveList.scrollTop = moveList.scrollHeight;
 }
 
 function undoMove() {
   if (aiThinking || game.history().length === 0) return;
+
   game.undo();
   if (aiToggle.checked && game.turn() === 'b' && game.history().length > 0) game.undo();
+
   selectedSquare = null;
   lastMove = null;
-  checkEvents = 0;
-  captureEvents = game.history({ verbose: true }).filter((m) => m.captured).length;
-  localStorage.setItem('black-crown-fen', game.fen());
-  localStorage.setItem('black-crown-history', JSON.stringify(game.history()));
+  checkEvents = game.history({ verbose: true }).filter((move) => {
+    const previous = game.history({ verbose: true });
+    return move.san?.includes('+') || move.san?.includes('#') || previous.length === 0;
+  }).length;
+  captureEvents = game.history({ verbose: true }).filter((move) => move.captured).length;
   resultOverlay.hidden = true;
-  render();
+  persistGame();
+  renderBoard();
+  updateDocumentTitle();
 }
 
 function resetGame() {
@@ -274,75 +321,81 @@ function resetGame() {
   selectedSquare = null;
   lastMove = null;
   movingSquare = null;
+  aiThinking = false;
   checkEvents = 0;
   captureEvents = 0;
-  aiThinking = false;
   resultOverlay.hidden = true;
   localStorage.removeItem('black-crown-fen');
-  localStorage.removeItem('black-crown-history');
   playSound('reset');
-  render();
+  renderBoard();
+  updateDocumentTitle();
 }
 
 function flipBoard() {
   orientation = orientation === 'white' ? 'black' : 'white';
   selectedSquare = null;
-  render();
+  renderBoard();
 }
 
 function showResult() {
   const checkmate = game.isCheckmate();
   resultTitle.textContent = checkmate ? 'CHECKMATE' : 'THE BOARD IS DRAWN';
-  const winner = checkmate ? (game.turn() === 'w' ? 'BLACK' : 'WHITE') : null;
-  resultCopy.textContent = checkmate ? `${winner} takes the crown. The archive records everything.` : 'Neither side earned the final word this time.';
+  if (checkmate) {
+    const winner = game.turn() === 'w' ? 'BLACK' : 'WHITE';
+    resultCopy.textContent = `${winner} takes the crown. The archive records everything.`;
+  } else {
+    resultCopy.textContent = 'Neither side earned the final word this time.';
+  }
   resultOverlay.hidden = false;
   playSound(checkmate ? 'mate' : 'reset');
 }
 
 function playSound(kind) {
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (!AudioCtx) return;
-  const ctx = playSound.ctx || (playSound.ctx = new AudioCtx());
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+  const context = playSound.context || (playSound.context = new AudioContextClass());
   const settings = {
-    move: [180, .055, 'sine'],
-    capture: [95, .09, 'triangle'],
-    mate: [62, .35, 'sawtooth'],
-    reset: [280, .07, 'sine'],
-  }[kind] || [160, .05, 'sine'];
-  osc.type = settings[2];
-  osc.frequency.setValueAtTime(settings[0], ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(Math.max(38, settings[0] * .55), ctx.currentTime + settings[1]);
-  gain.gain.setValueAtTime(.0001, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(.06, ctx.currentTime + .008);
-  gain.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime + settings[1]);
-  osc.connect(gain).connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + settings[1] + .02);
+    move: [180, 0.055, 'sine'],
+    capture: [95, 0.09, 'triangle'],
+    mate: [62, 0.35, 'sawtooth'],
+    reset: [280, 0.07, 'sine'],
+  }[kind] || [160, 0.05, 'sine'];
+
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.type = settings[2];
+  oscillator.frequency.setValueAtTime(settings[0], context.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(Math.max(38, settings[0] * 0.55), context.currentTime + settings[1]);
+  gain.gain.setValueAtTime(0.0001, context.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.06, context.currentTime + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + settings[1]);
+  oscillator.connect(gain).connect(context.destination);
+  oscillator.start();
+  oscillator.stop(context.currentTime + settings[1] + 0.02);
 }
 
 function restoreSavedGame() {
-  const saved = localStorage.getItem('black-crown-fen');
-  if (!saved) return;
+  const savedFen = localStorage.getItem('black-crown-fen');
+  if (!savedFen) return;
   try {
-    game.load(saved);
-    captureEvents = game.history({ verbose: true }).filter((m) => m.captured).length;
+    game.load(savedFen);
+    const history = game.history({ verbose: true });
+    captureEvents = history.filter((move) => move.captured).length;
   } catch {
     localStorage.removeItem('black-crown-fen');
   }
 }
 
-new MutationObserver(() => {
-  document.title = game.isCheckmate() ? 'CHECKMATE | THE BLACK CROWN' : `THE BLACK CROWN | ${game.turn() === 'w' ? 'White' : 'Black'} to move`;
-}).observe(document.body, { subtree: true, childList: true });
+$('#newGameBtn').addEventListener('click', resetGame);
+$('#resultNewGame').addEventListener('click', resetGame);
+$('#undoBtn').addEventListener('click', undoMove);
+$('#flipBtn').addEventListener('click', flipBoard);
+aiToggle.addEventListener('change', () => {
+  selectedSquare = null;
+  renderBoard();
+});
 
-document.querySelector('#newGameBtn').addEventListener('click', resetGame);
-document.querySelector('#resultNewGame').addEventListener('click', resetGame);
-document.querySelector('#undoBtn').addEventListener('click', undoMove);
-document.querySelector('#flipBtn').addEventListener('click', flipBoard);
-aiToggle.addEventListener('change', () => { selectedSquare = null; render(); });
-
-makeDust();
+buildDust();
 restoreSavedGame();
-render();
+renderBoard();
+updateDocumentTitle();
