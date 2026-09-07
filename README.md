@@ -22,7 +22,7 @@ This README is built like a **visual documentary**, not a plain project descript
 
 The animation above is a real gameplay sequence. Pieces move through an opening, the position changes from scene to scene, and the chronicle records the match beside the board.
 
-The README uses a **Graphics Interchange Format (GIF)** for the live gameplay showcase because GitHub renders animated GIFs reliably in Markdown. The Scalable Vector Graphics (SVG) files are kept for static visual scenes and design documentation.
+The README uses a **Graphics Interchange Format (GIF)** for the live gameplay showcase because GitHub renders animated GIFs in Markdown. The Scalable Vector Graphics (SVG) files remain available for static visual scenes and design documentation.
 
 ### Scene I · The board awakens
 
