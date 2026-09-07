@@ -1,0 +1,29 @@
+<svg width="1100" height="330" viewBox="0 0 1100 330" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080808"/><stop offset="1" stop-color="#181411"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <style>.s{font:700 11px Arial,sans-serif;letter-spacing:3px;fill:#8e897f}.t{font:800 28px Georgia,serif;letter-spacing:2px;fill:#eee8db}.g{fill:#b8a47a}.r{fill:#9e2e2e}.line{stroke:#b8a47a;stroke-opacity:.23}</style>
+</defs>
+<rect width="1100" height="330" fill="url(#bg)"/><rect x="22" y="22" width="1056" height="286" fill="none" stroke="#b8a47a" stroke-opacity=".14"/>
+<text x="58" y="66" class="s">03 / CROWN AI</text><text x="58" y="103" class="t">THE OPPONENT DOES NOT SLEEP.</text>
+<g transform="translate(70 150)">
+  <text font-family="Georgia" font-size="82" class="g" filter="url(#glow)">♛</text>
+  <circle cx="40" cy="39" r="15" fill="#9e2e2e" opacity=".16"><animate attributeName="r" values="6;30;6" dur="1.8s" repeatCount="indefinite"/></circle>
+</g>
+<g transform="translate(230 140)">
+  <text class="s">EVALUATING POSITION</text>
+  <rect x="0" y="27" width="330" height="8" fill="#24231f"/><rect x="0" y="27" width="120" height="8" fill="#b8a47a"><animate attributeName="width" values="45;280;160;250;90" dur="5s" repeatCount="indefinite"/></rect>
+  <text y="70" class="t" font-size="18">MATERIAL</text><text x="180" y="70" class="g" font-family="Georgia" font-size="20">+3</text>
+  <text y="103" class="t" font-size="18">CENTER</text><text x="180" y="103" class="g" font-family="Georgia" font-size="20">+6</text>
+  <text y="136" class="t" font-size="18">TACTICAL</text><text x="180" y="136" class="r" font-family="Georgia" font-size="20">+80</text>
+</g>
+<g transform="translate(650 140)">
+  <text class="s">THREE CANDIDATES</text>
+  <g font-family="Georgia" font-size="28" fill="#eee8db">
+    <text y="52">♞f6</text><text x="105" y="52">♟d6</text><text x="210" y="52">♝b4</text>
+  </g>
+  <g class="g"><circle cx="13" cy="70" r="4"><animate attributeName="opacity" values="1;.25;1" dur="1s" repeatCount="indefinite"/></circle><circle cx="118" cy="70" r="4"><animate attributeName="opacity" values=".25;1;.25" dur="1s" repeatCount="indefinite"/></circle><circle cx="223" cy="70" r="4"><animate attributeName="opacity" values=".25;.05;1" dur="1s" repeatCount="indefinite"/></circle></g>
+  <text y="115" class="t" font-size="18">THE CROWN CHOOSES.</text>
+</g>
+<g transform="translate(70 275)"><text class="s">OPTIONAL · LOCAL · LEGAL MOVES ONLY</text></g>
+</svg>
