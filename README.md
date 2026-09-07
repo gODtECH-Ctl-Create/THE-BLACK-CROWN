@@ -2,68 +2,62 @@
 
 > **Every square is a throne. Take one.**
 >
-> A gothic chess arena designed to feel less like a utility and more like a game discovered in a haunted archive.
+> A gothic chess arena where the board is the protagonist and every move leaves evidence.
 
 <p align="center">
-  <img src="assets/black-crown-demo.svg" alt="Animated preview of The Black Crown chess arena" width="100%" />
+  <img src="assets/black-crown-gameplay.gif" alt="Animated gameplay of The Black Crown: pieces moving across the board while the match chronicle updates" width="100%" />
 </p>
 
 <div align="center">
 
-**[PLAY THE ARENA](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN)** · **[OPEN THE CODE](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/tree/main)** · **[VIEW THE BUILD PR](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/pull/1)**
+**[PLAY THE ARENA](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN)** · **[OPEN THE SOURCE](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/tree/main)** · **[VIEW THE BUILD](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/pull/1)**
 
 </div>
 
 ---
 
-## The first scene
+## Watch the game happen
 
-The Black Crown is not trying to be another clean, friendly chess widget.
+This README is built like a **visual documentary**, not a plain project description.
 
-It is a **browser-first chess experience** with theatrical motion, archival typography, a dark material palette and a board that behaves like the central artifact of the page.
+The animation above is a real gameplay sequence. Pieces move through an opening, the position changes from scene to scene, and the chronicle records the match beside the board.
 
-The interface is intentionally built around the feeling of **watching a game happen**, not filling out a dashboard.
+The README uses a **Graphics Interchange Format (GIF)** for the live gameplay showcase because GitHub renders animated GIFs in Markdown. The Scalable Vector Graphics (SVG) files remain available for static visual scenes and design documentation.
 
-## Watch the systems move
+### Scene I · The board awakens
 
-### I. The board awakens
+<p align="center"><img src="assets/black-crown-gameplay.gif" alt="The board awakening as a chess game is played" width="82%" /></p>
 
-<p align="center"><img src="assets/01-board-awakens.svg" alt="Animated walkthrough of board selection, legal moves and Crown AI state" width="100%" /></p>
+Select a piece. Consequences appear before commitment. A move lands. The next position becomes the next scene.
 
-A click selects a piece. The board immediately reveals legal targets. Moving a piece creates a landing beat. A capture gets its own visual and audio cue. A checked king gets an aura instead of a tiny status label buried somewhere on the screen.
+### Scene II · The chronicle remembers
 
-### II. The chronicle remembers
+The move list is treated as evidence rather than a dashboard widget. Captures, checks, position state and the latest action remain close to the board.
 
-<p align="center"><img src="assets/02-chronicle.svg" alt="Animated walkthrough of move log, captures and check state" width="100%" /></p>
+### Scene III · The Crown thinks
 
-Every move becomes part of the chronicle. Captures remain visible. The latest move is highlighted. The board state is always inspectable. The idea is simple: **the game should leave evidence behind.**
-
-### III. The Crown thinks
-
-<p align="center"><img src="assets/03-crown-ai.svg" alt="Animated walkthrough of Crown AI evaluating a chess position" width="100%" /></p>
-
-The optional Black opponent uses a lightweight heuristic over legal moves, considering material, central squares and tactical signals. It is deliberately transparent and easy to replace with a stronger engine later.
+The optional Black opponent evaluates legal moves using a lightweight heuristic. The same visual contract can later sit on top of a stronger chess engine.
 
 **AI** means **Artificial Intelligence**.
 
 ---
 
-## What is alive right now
+## What is alive
 
 | System | Experience |
 | --- | --- |
-| ♟ **Real chess rules** | Legal moves, check, checkmate, draws, castling, promotion, en passant and history are delegated to Chess.js. |
-| ♛ **Crown AI** | Optional Black opponent with a small tactical heuristic. |
-| ◈ **Move theatre** | Selected squares, legal targets, captures, check aura and piece landing animation. |
-| ◌ **The Chronicle** | Move log, captured pieces, checks, captures and current board state. |
-| ↻ **Board flip** | Swap player orientation without restarting the game. |
-| ⌂ **Local memory** | The current position survives refresh through browser storage. |
-| ◒ **Atmosphere** | Grain, dust, vignette, typography, shadows and Web Audio move cues. |
-| 📱 **Responsive UI** | The composition collapses cleanly for smaller screens instead of shrinking everything into unusable controls. |
+| ♟ **Real chess rules** | Legal moves, check, checkmate, draws, castling, promotion, en passant and history through Chess.js. |
+| ♛ **Crown AI** | Optional Black opponent with tactical, material and central-control heuristics. |
+| ◈ **Move theatre** | Selection, legal targets, landing motion, captures and check state are visually distinct. |
+| ◌ **The Chronicle** | Move log, captures, checks and board state stay visible. |
+| ↻ **Board flip** | Reverse orientation without restarting the match. |
+| ⌂ **Local memory** | The current position survives refresh in browser storage. |
+| ◒ **Atmosphere** | Grain, dust, layered shadows, archival typography and Web Audio cues. |
+| 📱 **Responsive UI** | The composition adapts to small screens without becoming a compressed desktop dashboard. |
 
 ---
 
-## The architecture
+## Architecture
 
 ```text
                          THE BLACK CROWN
@@ -81,11 +75,7 @@ The optional Black opponent uses a lightweight heuristic over legal moves, consi
                                legal position state
 ```
 
-The initial implementation deliberately avoids a server and framework overhead. The game is a static site with a real chess rules engine loaded as a pinned **ECMAScript Module (ESM)**.
-
-The saved position is represented using **Forsyth-Edwards Notation (FEN)**, a compact standard notation for describing a chess position.
-
-That architecture leaves a clean seam for the next generation: multiplayer rooms, authoritative server validation, profiles, spectators and replay.
+The current foundation is deliberately static and dependency-light. The chess rules engine is loaded as a pinned ECMAScript Module (ESM), and the position is saved as Forsyth-Edwards Notation (FEN).
 
 ---
 
@@ -99,8 +89,6 @@ python3 -m http.server 4173
 
 Open `http://localhost:4173`.
 
-A static server is recommended because the browser loads the chess engine as an ECMAScript Module.
-
 ---
 
 ## Project map
@@ -112,10 +100,11 @@ THE-BLACK-CROWN/
 ├── app.js
 ├── favicon.svg
 ├── assets/
-│   ├── black-crown-demo.svg
-│   ├── 01-board-awakens.svg
-│   ├── 02-chronicle.svg
-│   └── 03-crown-ai.svg
+│   ├── black-crown-gameplay.gif   ← live gameplay showcase
+│   ├── black-crown-demo.svg       ← static visual identity artwork
+│   ├── 01-board-awakens.svg       ← static scene artwork
+│   ├── 02-chronicle.svg           ← static scene artwork
+│   └── 03-crown-ai.svg            ← static scene artwork
 └── .github/
     └── workflows/
         └── deploy-pages.yml
@@ -125,31 +114,31 @@ THE-BLACK-CROWN/
 
 ## Design doctrine
 
-**The board wins.** The surrounding UI exists to frame the decision, not fight it.
+**The board wins.** The surrounding interface frames decisions instead of competing with them.
 
-**Motion has meaning.** A hover, move, capture, check and checkmate should not all feel like the same animation.
+**Motion has meaning.** Hover, selection, movement, capture, check and checkmate should never feel identical.
 
-**Information feels discovered.** The move log is a chronicle. Player state is a ritual. Captures are evidence.
+**Information feels discovered.** The move log is a chronicle. Captures are evidence. Player state is ritual.
 
-**Darkness has texture.** The palette uses warm paper tones, muted metal, restrained red and layered shadows instead of generic black gradients.
+**Darkness has texture.** Warm paper tones, muted metal, restrained red and deep shadows create the material world.
 
-**The interface is a stage.** On mobile, desktop and future multiplayer screens, the goal remains the same: make the person feel that something important is happening on the board.
+**The interface is a stage.** Desktop, mobile, local play and future multiplayer should all feel like different rooms inside the same universe.
 
 ---
 
-## The roadmap
+## Roadmap
 
-### Act II — make the game dangerous
+### Act II · Make the game dangerous
 
-- drag-and-drop movement with tactile transitions
-- real promotion choice modal
-- chess clock with pressure states
-- stronger Crown AI with difficulty personalities
+- proper drag-and-drop movement
+- promotion choice chamber
+- chess clocks with pressure states
+- stronger Crown AI with personality levels
 - opening recognition
-- replay mode with cinematic move playback
+- cinematic replay mode
 - named local game saves
 
-### Act III — build the arena
+### Act III · Build the arena
 
 - online rooms
 - private match links
@@ -157,17 +146,17 @@ THE-BLACK-CROWN/
 - spectator mode
 - reconnect and resume
 - persistent player profiles
-- server-authoritative validation
+- server-authoritative move validation
 
-### Act IV — build the mythology
+### Act IV · Build the mythology
 
-- multiple board materials and piece sets
+- themed boards and piece sets
 - reactive soundscape
 - achievements and match history
 - opening repertoire
 - cinematic checkmate sequences
-- shareable game stories
-- animated replay exports for documentation and social content
+- shareable match stories
+- richer README and social replay exports
 
 ---
 
@@ -175,6 +164,6 @@ THE-BLACK-CROWN/
 
 **Foundation build · playable · under active development**
 
-The repository began as a one-line README. The first build now establishes the game shell, responsive UI, chess interaction layer, local persistence, optional Artificial Intelligence opponent, animated README storytelling and a GitHub Pages deployment path. The current work lives in **PR #1** so the foundation can be reviewed before it reaches `main`.
+The repository began as a one-line README. It now contains the first playable Black Crown arena, a responsive gothic interface, local game persistence, an optional Artificial Intelligence opponent, deployment wiring, and a live animated gameplay showcase designed specifically for GitHub.
 
 > **Built for experimentation. Designed to grow teeth.**
