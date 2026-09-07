@@ -1,0 +1,12 @@
+{
+  "name":"THE BLACK CROWN",
+  "short_name":"Black Crown",
+  "description":"A gothic strategy chess ritual by gODtECH.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#07070b",
+  "theme_color":"#07070b",
+  "orientation":"portrait-primary",
+  "icons":[{"src":"./assets/crown.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
