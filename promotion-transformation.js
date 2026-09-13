@@ -20,6 +20,7 @@
   let active = false;
   let cleanupTimer = 0;
   let lastSignature = '';
+  let hiddenPiece = null;
 
   function latestSan() {
     const latest = moveList.querySelectorAll('.move-san.latest');
@@ -41,27 +42,39 @@
     if (!square) return null;
 
     const promotedPiece = square.querySelector('.piece');
-    const isBlack = promotedPiece?.classList.contains('black') || /Black/i.test(captionTitle.textContent) || /Black/i.test(caption.textContent);
+    const isBlack = promotedPiece?.classList.contains('black') || /Black/i.test(caption.textContent);
 
     return {
       destination,
       type,
       isBlack,
       square,
+      promotedPiece,
       piece: pieceGlyph[type]?.[isBlack ? 'b' : 'w'] || (isBlack ? '♛' : '♕'),
       underpromotion: kicker === 'UNDERPROMOTION',
     };
   }
 
+  function restoreHiddenPiece() {
+    if (hiddenPiece) {
+      hiddenPiece.classList.remove('promotion-piece-hidden');
+      hiddenPiece = null;
+    }
+  }
+
   function clear() {
     if (cleanupTimer) window.clearTimeout(cleanupTimer);
     eventFx.querySelectorAll('.promotion-transformation').forEach((node) => node.remove());
+    restoreHiddenPiece();
     body.removeAttribute('data-promotion-transformation');
     active = false;
   }
 
   function buildTransformation(promotion) {
     clear();
+
+    hiddenPiece = promotion.promotedPiece;
+    hiddenPiece?.classList.add('promotion-piece-hidden');
 
     const rect = promotion.square.getBoundingClientRect();
     const scene = document.createElement('div');
