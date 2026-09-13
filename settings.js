@@ -14,7 +14,8 @@
     const volume = Math.max(0, Math.min(100, Number(next.volume) || 0));
     localStorage.setItem('black-crown-sound-enabled', next.sound === 'on' ? 'on' : 'off');
     localStorage.setItem('black-crown-sound-volume', String(volume));
-    window.dispatchEvent(new CustomEvent('black-crown-settings-changed', { detail: { ...next, volume } }));
+    const difficulty = localStorage.getItem('black-crown-difficulty') || 'crown';
+    window.dispatchEvent(new CustomEvent('black-crown-settings-changed', { detail: { ...next, volume, difficulty } }));
   };
 
   let settings = read();
@@ -77,7 +78,10 @@
   $('settingsEvents').addEventListener('change', (event) => { settings.events = event.target.value; save(); });
   $('settingsCoordinates').addEventListener('change', (event) => { settings.coordinates = event.target.checked; save(); });
   $('settingsConfirm').addEventListener('change', (event) => { settings.confirmNewGame = event.target.checked; save(); });
-  $('settingsDifficulty').addEventListener('change', (event) => { localStorage.setItem('black-crown-difficulty', event.target.value); });
+  $('settingsDifficulty').addEventListener('change', (event) => {
+    localStorage.setItem('black-crown-difficulty', event.target.value);
+    apply(settings);
+  });
 
   $('clearRecords').addEventListener('click', () => {
     if (!window.confirm('Clear every battle in the Hall of Records?')) return;
@@ -98,8 +102,7 @@
     const nav = screen.querySelector('.landing-nav-links');
     if (nav && !nav.querySelector('.landing-settings-link')) nav.insertAdjacentHTML('beforeend', '<a class="landing-settings-link" href="#settings">SETTINGS</a>');
     screen.querySelectorAll('.landing-settings-link').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); open(); }));
-    const gameButton = document.getElementById('gameSettingsBtn');
-    gameButton?.addEventListener('click', open, { once: true });
+    document.getElementById('gameSettingsBtn')?.addEventListener('click', open, { once: true });
   }
 
   injectLinks();
