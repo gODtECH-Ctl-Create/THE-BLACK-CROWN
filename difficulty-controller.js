@@ -20,6 +20,7 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   let busy = false;
   let allowNativeChange = false;
   let lastMoveSignature = '';
+  let aiLockedForMatch = false;
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
@@ -47,11 +48,39 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   select.value = difficulty;
   controlGroup.appendChild(panel);
 
+  function extractSans() {
+    return [...moveList.querySelectorAll('.move-san')]
+      .map((node) => node.textContent.trim())
+      .filter(Boolean);
+  }
+
+  function syncMatchLock() {
+    const movesExist = extractSans().length > 0;
+    if (!movesExist) {
+      aiLockedForMatch = false;
+    } else if (aiToggle.checked) {
+      aiLockedForMatch = true;
+    }
+
+    aiToggle.disabled = aiLockedForMatch;
+    select.disabled = !aiToggle.checked || aiLockedForMatch;
+
+    if (aiLockedForMatch) {
+      hint.textContent = `${levels[difficulty]?.description || ''} · LOCKED FOR THIS MATCH`;
+      aiToggle.setAttribute('aria-label', 'Crown AI is locked for this match');
+      aiToggle.title = 'Crown AI cannot be disabled after the match begins';
+    } else {
+      hint.textContent = levels[difficulty]?.description || '';
+      aiToggle.removeAttribute('aria-label');
+      aiToggle.removeAttribute('title');
+    }
+  }
+
   function syncDifficultyUi() {
     const level = levels[difficulty];
     select.value = difficulty;
-    select.disabled = !aiToggle.checked;
-    hint.textContent = level ? level.description : '';
+    syncMatchLock();
+    if (!aiLockedForMatch) hint.textContent = level ? level.description : '';
   }
 
   function persistDifficulty() {
@@ -78,12 +107,6 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
       // Ignore malformed save data and keep the selected default.
     }
     select.value = difficulty;
-  }
-
-  function extractSans() {
-    return [...moveList.querySelectorAll('.move-san')]
-      .map((node) => node.textContent.trim())
-      .filter(Boolean);
   }
 
   function rebuildGame() {
@@ -189,11 +212,19 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
       busy = false;
       lastMoveSignature = extractSans().join('|');
       syncBlackStatus();
+      syncMatchLock();
     }, difficulty === 'beginner' ? 420 : difficulty === 'intermediate' ? 620 : difficulty === 'hard' ? 850 : 1080);
   }
 
   function handleToggle(event) {
     if (allowNativeChange) return;
+    if (aiLockedForMatch) {
+      event.stopImmediatePropagation();
+      aiToggle.checked = true;
+      syncDifficultyUi();
+      return;
+    }
+
     event.stopImmediatePropagation();
     cancelTimer();
     busy = false;
@@ -211,6 +242,10 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   aiToggle.addEventListener('change', handleToggle, true);
 
   select.addEventListener('change', () => {
+    if (aiLockedForMatch) {
+      syncDifficultyUi();
+      return;
+    }
     difficulty = select.value;
     persistDifficulty();
     cancelTimer();
@@ -221,6 +256,7 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   });
 
   const observer = new MutationObserver(() => {
+    syncMatchLock();
     if (busy) return;
     const signature = extractSans().join('|');
     if (signature === lastMoveSignature) return;
@@ -231,12 +267,9 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   });
   observer.observe(moveList, { childList: true, subtree: true });
 
-  const initial = extractSans().join('|');
-  lastMoveSignature = initial;
   restoreDifficultyFromSave();
+  lastMoveSignature = extractSans().join('|');
   syncDifficultyUi();
 
-  // The native AI in app.js is already part of the stable game, so this controller
-  // replaces it by cancelling its timer as soon as the board enters Black's turn.
   if (aiToggle.checked) scheduleAi();
 })();
