@@ -30,6 +30,9 @@ jobs:
       - name: Syntax check special move auditor
         run: node --check special-move-audit.js
 
+      - name: Syntax check pawn Queen strike director
+        run: node --check pawn-queen-strike.js
+
       - name: Install chess.js for rule audit
         run: npm install --no-save chess.js@1.4.0
 
