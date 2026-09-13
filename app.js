@@ -27,7 +27,14 @@ const checkAura = $('#checkAura');
 const resultOverlay = $('#resultOverlay');
 const resultTitle = $('#resultTitle');
 const resultCopy = $('#resultCopy');
+const resultNewGame = $('#resultNewGame');
 const taunt = $('#taunt');
+
+const promotionChoiceHost = document.createElement('div');
+promotionChoiceHost.className = 'button-stack';
+promotionChoiceHost.style.margin = '18px auto 0';
+promotionChoiceHost.style.width = 'min(360px, 100%)';
+resultNewGame.before(promotionChoiceHost);
 
 const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
@@ -36,6 +43,12 @@ const pieceGlyph = {
   b: { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' },
 };
 const pieceValue = { p: 1, n: 3, b: 3, r: 5, q: 9, k: 100 };
+const promotionOptions = [
+  ['q', 'QUEEN'],
+  ['r', 'ROOK'],
+  ['b', 'BISHOP'],
+  ['n', 'KNIGHT'],
+];
 const taunts = [
   '“Do not confuse silence with mercy.”',
   '“The board has no sympathy for hesitation.”',
@@ -49,6 +62,7 @@ let selectedSquare = null;
 let lastMove = null;
 let movingSquare = null;
 let aiThinking = false;
+let pendingPromotion = null;
 let checkEvents = 0;
 let captureEvents = 0;
 
@@ -101,6 +115,11 @@ function findKing(color) {
 
 function squareIsCapture(move) {
   return Boolean(move.captured || move.flags?.includes('e'));
+}
+
+function isPromotionMove(from, to) {
+  const piece = game.get(from);
+  return piece?.type === 'p' && (to[1] === '1' || to[1] === '8');
 }
 
 function renderBoard() {
@@ -191,7 +210,7 @@ function updatePanels() {
 }
 
 function handleSquare(squareName) {
-  if (aiThinking || game.isGameOver()) return;
+  if (aiThinking || game.isGameOver() || pendingPromotion) return;
   if (aiToggle.checked && game.turn() === 'b') return;
 
   const piece = game.get(squareName);
@@ -214,7 +233,11 @@ function handleSquare(squareName) {
 
   const legalMove = game.moves({ square: selectedSquare, verbose: true }).find((move) => move.to === squareName);
   if (legalMove) {
-    playMove(selectedSquare, squareName);
+    if (isPromotionMove(selectedSquare, squareName)) {
+      openPromotion(selectedSquare, squareName);
+    } else {
+      playMove(selectedSquare, squareName);
+    }
     return;
   }
 
@@ -232,6 +255,43 @@ function updateDocumentTitle() {
   if (game.isCheckmate()) document.title = 'CHECKMATE | THE BLACK CROWN';
   else if (game.isDraw()) document.title = 'DRAW | THE BLACK CROWN';
   else document.title = `THE BLACK CROWN | ${game.turn() === 'w' ? 'White' : 'Black'} to move`;
+}
+
+function openPromotion(from, to) {
+  pendingPromotion = { from, to };
+  resultOverlay.hidden = false;
+  resultOverlay.setAttribute('role', 'dialog');
+  resultOverlay.setAttribute('aria-modal', 'true');
+  resultTitle.textContent = 'CHOOSE THE CROWN';
+  resultCopy.textContent = 'The pawn has crossed the final rank. What will it become?';
+  resultNewGame.hidden = true;
+
+  promotionChoiceHost.replaceChildren();
+  for (const [type, label] of promotionOptions) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'action-button';
+    button.setAttribute('aria-label', `Promote pawn to ${label.toLowerCase()}`);
+    button.innerHTML = `<span>${pieceGlyph[game.turn()][type]} ${label}</span><span>↗</span>`;
+    button.addEventListener('click', () => completePromotion(type), { once: true });
+    promotionChoiceHost.appendChild(button);
+  }
+}
+
+function closePromotion() {
+  pendingPromotion = null;
+  promotionChoiceHost.replaceChildren();
+  resultOverlay.removeAttribute('role');
+  resultOverlay.removeAttribute('aria-modal');
+  resultNewGame.hidden = false;
+  resultOverlay.hidden = true;
+}
+
+function completePromotion(pieceType) {
+  const promotion = pendingPromotion;
+  if (!promotion) return;
+  closePromotion();
+  playMove(promotion.from, promotion.to, pieceType);
 }
 
 function playMove(from, to, promotion = 'q') {
@@ -298,7 +358,7 @@ function makeAiMove() {
 }
 
 function undoMove() {
-  if (aiThinking || game.history().length === 0) return;
+  if (aiThinking || pendingPromotion || game.history().length === 0) return;
 
   game.undo();
   if (aiToggle.checked && game.turn() === 'b' && game.history().length > 0) game.undo();
@@ -311,6 +371,8 @@ function undoMove() {
   }).length;
   captureEvents = game.history({ verbose: true }).filter((move) => move.captured).length;
   resultOverlay.hidden = true;
+  promotionChoiceHost.replaceChildren();
+  resultNewGame.hidden = false;
   persistGame();
   renderBoard();
   updateDocumentTitle();
@@ -322,9 +384,12 @@ function resetGame() {
   lastMove = null;
   movingSquare = null;
   aiThinking = false;
+  pendingPromotion = null;
   checkEvents = 0;
   captureEvents = 0;
   resultOverlay.hidden = true;
+  promotionChoiceHost.replaceChildren();
+  resultNewGame.hidden = false;
   localStorage.removeItem('black-crown-fen');
   playSound('reset');
   renderBoard();
@@ -338,6 +403,11 @@ function flipBoard() {
 }
 
 function showResult() {
+  pendingPromotion = null;
+  promotionChoiceHost.replaceChildren();
+  resultNewGame.hidden = false;
+  resultOverlay.removeAttribute('role');
+  resultOverlay.removeAttribute('aria-modal');
   const checkmate = game.isCheckmate();
   resultTitle.textContent = checkmate ? 'CHECKMATE' : 'THE BOARD IS DRAWN';
   if (checkmate) {
@@ -381,13 +451,14 @@ function restoreSavedGame() {
     game.load(savedFen);
     const history = game.history({ verbose: true });
     captureEvents = history.filter((move) => move.captured).length;
+    checkEvents = history.filter((move) => move.san?.includes('+') || move.san?.includes('#')).length;
   } catch {
     localStorage.removeItem('black-crown-fen');
   }
 }
 
 $('#newGameBtn').addEventListener('click', resetGame);
-$('#resultNewGame').addEventListener('click', resetGame);
+resultNewGame.addEventListener('click', resetGame);
 $('#undoBtn').addEventListener('click', undoMove);
 $('#flipBtn').addEventListener('click', flipBoard);
 aiToggle.addEventListener('change', () => {
