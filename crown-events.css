@@ -102,7 +102,6 @@ body[data-crown-event='checkmate'] .event-fx::after {
   100% { opacity: 0; transform: translate(-50%,-50%) scale(.84); }
 }
 
-/* Event-specific board signatures */
 body[data-crown-event='queen-hunt'] .board-frame,
 body[data-crown-event='queen-capture'] .board-frame {
   animation: queen-impact 760ms cubic-bezier(.12,.86,.14,1) both;
@@ -163,7 +162,48 @@ body[data-crown-event='checkmate'] .board-frame {
   100% { filter: brightness(.98); transform: scale(1); }
 }
 
-/* The caption becomes a true event title, not a generic toast. */
+.event-crest {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(70px, 11vw, 150px);
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  color: rgba(194,172,126,.78);
+  text-shadow: 0 0 26px rgba(194,172,126,.18);
+  animation: crest-rise 900ms cubic-bezier(.18,.8,.16,1) both;
+}
+
+.event-crest-check,
+.event-crest-major-check,
+.event-crest-checkmate { color: rgba(155,42,42,.78); text-shadow: 0 0 32px rgba(155,42,42,.22); }
+.event-crest-checkmate { animation: crest-mate 1500ms cubic-bezier(.12,.8,.12,1) both; font-size: clamp(88px, 15vw, 190px); }
+.event-crest-queen-hunt { animation: crest-strike 1050ms cubic-bezier(.12,.84,.12,1) both; }
+
+@keyframes crest-rise {
+  0% { opacity: 0; transform: scale(.45) translateY(18px); filter: blur(8px); }
+  18% { opacity: .55; }
+  45% { opacity: .20; transform: scale(1.05) translateY(0); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.18) translateY(-8px); }
+}
+
+@keyframes crest-strike {
+  0% { opacity: 0; transform: scale(.25) rotate(-8deg); filter: blur(8px); }
+  16% { opacity: .75; }
+  34% { opacity: .34; transform: scale(1.08) rotate(0); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.22) rotate(2deg); }
+}
+
+@keyframes crest-mate {
+  0% { opacity: 0; transform: scale(.30); filter: blur(10px); }
+  16% { opacity: .85; }
+  45% { opacity: .30; transform: scale(1); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.14); }
+}
+
 body[data-crown-event] .event-caption {
   z-index: 80;
   text-shadow: 0 2px 30px rgba(0,0,0,.85);
@@ -181,6 +221,7 @@ body[data-crown-event='checkmate'] .event-caption {
 @media (prefers-reduced-motion: reduce) {
   .event-fx::before,
   .event-fx::after,
+  .event-crest,
   body[data-crown-event] .board-frame {
     animation: none !important;
   }
