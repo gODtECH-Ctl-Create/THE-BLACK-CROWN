@@ -31,6 +31,9 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   let busy = false;
   let lastMoveSignature = '';
 
+  // The main engine can restore a saved AI game before this controller loads.
+  // Keep AI inert until the player explicitly selects a match type.
+  aiToggle.checked = false;
   aiToggle.hidden = true;
   aiToggle.disabled = true;
   if (controlGroup) controlGroup.hidden = true;
@@ -174,14 +177,6 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
     }
   }
 
-  function dispatchModeState() {
-    const nextAiState = matchMode === 'crown';
-    aiToggle.disabled = false;
-    aiToggle.checked = nextAiState;
-    aiToggle.disabled = true;
-    aiToggle.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-
   function updateGameModeLabel() {
     if (!connectionLabel) return;
     connectionLabel.textContent = matchMode === 'crown'
@@ -203,15 +198,20 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
     modeShell.hidden = true;
   }
 
+  function dispatchMatchMode() {
+    aiToggle.disabled = false;
+    aiToggle.checked = matchMode === 'crown';
+    aiToggle.disabled = true;
+    // The capture-phase handler below owns AI state, so app.js never starts its native timer here.
+    aiToggle.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
   function startMatch() {
     cancelTimer();
     persistSetup();
     closeModeSetup();
     matchStarted = true;
-    aiToggle.disabled = false;
-    aiToggle.checked = matchMode === 'crown';
-    aiToggle.dispatchEvent(new Event('change', { bubbles: true }));
-    aiToggle.disabled = true;
+    dispatchMatchMode();
     updateGameModeLabel();
 
     entranceScreen.classList.add('leave');
