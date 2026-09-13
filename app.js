@@ -483,7 +483,7 @@ function playMove(from, to, promotion = 'q') {
     captureEvents = matchHistory.filter((item) => item.captured).length;
     persistGame();
 
-    if (event.severity >= 4) triggerCrownEvent(event);
+    if (event.severity >= 3) triggerCrownEvent(event);
     playSound(event.type === 'checkmate' ? 'mate' : isCapture(move) ? 'capture' : 'move');
 
     renderBoard();
@@ -728,6 +728,7 @@ function enterGame() {
 
 function backToEntrance() {
   gameScreen.classList.remove('enter');
+  gameScreen.hidden = true;
   entranceScreen.hidden = false;
   entranceScreen.classList.remove('leave');
   window.scrollTo({ top: 0, behavior: 'smooth' });
