@@ -1,3 +1,5 @@
+import './difficulty-controller.js';
+
 /* THE BLACK CROWN · Pawn takes Queen cinematic strike */
 
 (() => {
