@@ -33,6 +33,9 @@ jobs:
       - name: Syntax check pawn Queen strike director
         run: node --check pawn-queen-strike.js
 
+      - name: Syntax check promotion transformation director
+        run: node --check promotion-transformation.js
+
       - name: Install chess.js for rule audit
         run: npm install --no-save chess.js@1.4.0
 
