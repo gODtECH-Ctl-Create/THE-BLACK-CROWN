@@ -1,44 +1,42 @@
 # ♛ THE BLACK CROWN
 
-> **Every square is a throne. Take one.**
+> **Every square is a throne. Every move leaves evidence.**
 >
-> A gothic chess arena where the board is the protagonist and every move leaves evidence.
+> A gothic chess experience by **gODtECH** where the board is the protagonist, important moves leave a mark, and every finished game becomes a story.
 
 <p align="center">
-  <img src="assets/black-crown-gameplay.gif" alt="Animated gameplay of The Black Crown: pieces moving across the board while the match chronicle updates" width="100%" />
+  <img src="assets/black-crown-gameplay.gif" alt="Animated gameplay of The Black Crown" width="100%" />
 </p>
 
 <div align="center">
 
-**[PLAY THE ARENA](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN)** · **[OPEN THE SOURCE](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/tree/main)** · **[VIEW THE BUILD](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/pull/1)**
+**[ENTER THE REPOSITORY](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN)** · **[OPEN THE SOURCE](https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN/tree/main)**
 
 </div>
 
 ---
 
-## Watch the game happen
+## The experience
 
-This README is built like a **visual documentary**, not a plain project description.
+THE BLACK CROWN is intentionally structured like a game instead of a utility.
 
-The animation above is a real gameplay sequence. Pieces move through an opening, the position changes from scene to scene, and the chronicle records the match beside the board.
+```text
+ENTRANCE
+   ↓
+THE CROWN AWAKENS
+   ↓
+GAME CHAMBER
+   ↓
+PLAY / THINK / ATTACK
+   ↓
+CROWN EVENTS
+   ↓
+CHECKMATE / DRAW
+   ↓
+THE CHRONICLE
+```
 
-The README uses a **Graphics Interchange Format (GIF)** for the live gameplay showcase because GitHub renders animated GIFs in Markdown. The Scalable Vector Graphics (SVG) files remain available for static visual scenes and design documentation.
-
-### Scene I · The board awakens
-
-<p align="center"><img src="assets/black-crown-gameplay.gif" alt="The board awakening as a chess game is played" width="82%" /></p>
-
-Select a piece. Consequences appear before commitment. A move lands. The next position becomes the next scene.
-
-### Scene II · The chronicle remembers
-
-The move list is treated as evidence rather than a dashboard widget. Captures, checks, position state and the latest action remain close to the board.
-
-### Scene III · The Crown thinks
-
-The optional Black opponent evaluates legal moves using a lightweight heuristic. The same visual contract can later sit on top of a stronger chess engine.
-
-**AI** means **Artificial Intelligence**.
+The opening screen establishes the world first. The game chamber is a separate space for the board and controls. When the match ends, the archive can tell the story of the battle from the recorded moves.
 
 ---
 
@@ -46,14 +44,86 @@ The optional Black opponent evaluates legal moves using a lightweight heuristic.
 
 | System | Experience |
 | --- | --- |
-| ♟ **Real chess rules** | Legal moves, check, checkmate, draws, castling, promotion, en passant and history through Chess.js. |
-| ♛ **Crown AI** | Optional Black opponent with tactical, material and central-control heuristics. |
-| ◈ **Move theatre** | Selection, legal targets, landing motion, captures and check state are visually distinct. |
-| ◌ **The Chronicle** | Move log, captures, checks and board state stay visible. |
-| ↻ **Board flip** | Reverse orientation without restarting the match. |
-| ⌂ **Local memory** | The current position survives refresh in browser storage. |
-| ◒ **Atmosphere** | Grain, dust, layered shadows, archival typography and Web Audio cues. |
-| 📱 **Responsive UI** | The composition adapts to small screens without becoming a compressed desktop dashboard. |
+| ♟ **Real chess rules** | Legal movement, check, checkmate, draws, castling, en passant, promotion and move history through Chess.js. |
+| ♛ **Crown AI** | Lightweight Black opponent using material, tactical, central-control and check signals. |
+| ◈ **Drag or click play** | Move pieces by selecting squares or dragging pieces into legal targets. |
+| ⚔ **Crown Events** | Important chess moments trigger differentiated visual effects instead of every move getting the same animation. |
+| ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own narrative treatment. |
+| ☠ **Major captures** | Queen captures, heavy-piece captures and other material swings can trigger stronger events. |
+| 👑 **Promotion Chamber** | A pawn reaching the final rank pauses the match and asks for Queen, Rook, Bishop or Knight. |
+| ◌ **The Chronicle** | Every move gets a readable narrative entry, while important moments receive additional story text. |
+| ⌂ **Local memory** | The current game, event history, board orientation and opponent setting survive refresh in browser storage. |
+| ◒ **Atmosphere** | Fog, grain, dust, layered shadows, engraved UI, responsive typography and Web Audio cues create the material world. |
+| 📱 **Responsive chamber** | Desktop and mobile layouts preserve the board as the visual center instead of shrinking it into a dashboard. |
+
+**AI** means **Artificial Intelligence**.
+
+---
+
+## The Crown Event system
+
+The game now treats chess moments as different levels of importance.
+
+```text
+NORMAL MOVE
+    ↓
+CAPTURE
+    ↓
+SPECIAL MOVE
+    ↓
+SIGNIFICANT CAPTURE
+    ↓
+MAJOR TACTICAL MOMENT
+    ↓
+CHECK
+    ↓
+CHECKMATE
+```
+
+Examples include:
+
+- **Knight takes Queen** → **THE QUEEN FALLS**
+- **Queen is captured** → **THE CROWN IS TAKEN**
+- **Rook or other heavy piece falls** → significant capture event
+- **Castling** → **THE FORTRESS TURNS**
+- **En passant** → **THE SHADOW CAPTURE**
+- **Promotion** → **THE PAWN BECOMES CROWN**
+- **Underpromotion** → **THE UNEXPECTED CROWN**
+- **Check** → **THE KING IS HUNTED** or **CHECK**
+- **Checkmate** → **THE FINAL BLOW**
+
+The visual intensity scales with the importance of the event. The goal is contrast: not every move should explode, because the rare moments need room to matter.
+
+---
+
+## The game story
+
+At the end of a match, the game can open **The Crown Chronicle**.
+
+The chronicle is generated from the actual move history. It includes:
+
+- every move as a narrative entry
+- Special move descriptions
+- major capture moments
+- check and checkmate moments
+- a battle-quality summary
+- move, capture, check and Crown Event counts
+
+The current narrator is intentionally dependency-light and deterministic. It uses the recorded chess state and event classification rather than calling an external language model. That leaves a clean seam for a richer Artificial Intelligence narrator later.
+
+Example tone:
+
+> **MOVE 17 · THE QUEEN FALLS**
+>
+> The Knight takes the Queen. The balance of the kingdom shifts in a single strike.
+>
+> **MOVE 24 · THE KING IS HUNTED**
+>
+> Black's move gives check. The King is forced to answer.
+>
+> **MOVE 27 · THE FINAL BLOW**
+>
+> Checkmate. The Crown has spoken.
 
 ---
 
@@ -62,24 +132,36 @@ The optional Black opponent evaluates legal moves using a lightweight heuristic.
 ```text
                          THE BLACK CROWN
                                 │
-             ┌──────────────────┴──────────────────┐
-             │                                     │
-        PRESENTATION                           GAME CORE
-     index.html + CSS                            app.js
-             │                                     │
-      ┌──────┼──────┐                 ┌───────────┼───────────┐
-      ▼      ▼      ▼                 ▼           ▼           ▼
-   layout  motion  mood            Chess.js   local state   audio
-                                        │
-                                        ▼
-                               legal position state
+                 ┌──────────────┴──────────────┐
+                 │                             │
+             ENTRANCE                     GAME CHAMBER
+                 │                             │
+                 │                       ┌─────┴─────┐
+                 │                       │           │
+                 │                    BOARD       CONTROLS
+                 │                       │
+                 │                    Chess.js
+                 │                       │
+                 │                  move + position
+                 │                       │
+                 │                ┌──────┴──────┐
+                 │                │             │
+                 │           EVENT ENGINE   LOCAL SAVE
+                 │                │
+                 │        ┌───────┼────────┐
+                 │        ↓       ↓        ↓
+                 │      FX     CHRONICLE  AUDIO
+                 │                │
+                 └────────────────┴──────────────┐
+                                                  ↓
+                                           END-OF-GAME STORY
 ```
 
-The current foundation is deliberately static and dependency-light. The chess rules engine is loaded as a pinned ECMAScript Module (ESM), and the position is saved as Forsyth-Edwards Notation (FEN).
+The foundation remains static and dependency-light. The chess rules engine is loaded as a pinned ECMAScript Module (ESM). Game state is saved locally and can be restored by replaying the recorded moves.
 
 ---
 
-## Run it locally
+## Run locally
 
 ```bash
 git clone https://github.com/gODtECH-Ctl-Create/THE-BLACK-CROWN.git
@@ -88,6 +170,8 @@ python3 -m http.server 4173
 ```
 
 Open `http://localhost:4173`.
+
+A local static server is recommended because the browser loads Chess.js as an ECMAScript Module.
 
 ---
 
@@ -99,12 +183,14 @@ THE-BLACK-CROWN/
 ├── styles.css
 ├── app.js
 ├── favicon.svg
+├── manifest.json
+├── sw.js
 ├── assets/
-│   ├── black-crown-gameplay.gif   ← live gameplay showcase
-│   ├── black-crown-demo.svg       ← static visual identity artwork
-│   ├── 01-board-awakens.svg       ← static scene artwork
-│   ├── 02-chronicle.svg           ← static scene artwork
-│   └── 03-crown-ai.svg            ← static scene artwork
+│   ├── black-crown-gameplay.gif
+│   ├── black-crown-demo.svg
+│   ├── 01-board-awakens.svg
+│   ├── 02-chronicle.svg
+│   └── 03-crown-ai.svg
 └── .github/
     └── workflows/
         └── deploy-pages.yml
@@ -114,15 +200,15 @@ THE-BLACK-CROWN/
 
 ## Design doctrine
 
-**The board wins.** The surrounding interface frames decisions instead of competing with them.
+**The board wins.** Everything around it frames the decision.
 
-**Motion has meaning.** Hover, selection, movement, capture, check and checkmate should never feel identical.
+**Motion has meaning.** Hover, movement, capture, check, special moves and checkmate should not feel interchangeable.
 
-**Information feels discovered.** The move log is a chronicle. Captures are evidence. Player state is ritual.
+**Darkness has texture.** Obsidian, aged paper, muted metal, restrained blood-red and engraved gold create the visual language.
 
-**Darkness has texture.** Warm paper tones, muted metal, restrained red and deep shadows create the material world.
+**gODtECH is part of the artifact.** The name appears as an intentional signature through the entrance, board frame, inscriptions and chronicle.
 
-**The interface is a stage.** Desktop, mobile, local play and future multiplayer should all feel like different rooms inside the same universe.
+**The archive remembers.** A finished game should leave more behind than a result. It should leave a story.
 
 ---
 
@@ -130,40 +216,45 @@ THE-BLACK-CROWN/
 
 ### Act II · Make the game dangerous
 
-- proper drag-and-drop movement
-- promotion choice chamber
-- chess clocks with pressure states
-- stronger Crown AI with personality levels
-- opening recognition
-- cinematic replay mode
-- named local game saves
+- [x] separate entrance and game chamber
+- [x] drag-and-drop movement
+- [x] promotion choice chamber
+- [x] Crown Event system
+- [x] special-move effects and narration
+- [x] end-of-game Chronicle
+- [ ] pressure-aware chess clocks
+- [ ] stronger Crown AI with personality levels
+- [ ] opening recognition
+- [ ] cinematic replay mode
+- [ ] named local game saves
 
 ### Act III · Build the arena
 
-- online rooms
-- private match links
-- friend invites
-- spectator mode
-- reconnect and resume
-- persistent player profiles
-- server-authoritative move validation
+- [ ] online rooms
+- [ ] private match links
+- [ ] friend invites
+- [ ] spectator mode
+- [ ] reconnect and resume
+- [ ] persistent player profiles
+- [ ] server-authoritative move validation
 
 ### Act IV · Build the mythology
 
-- themed boards and piece sets
-- reactive soundscape
-- achievements and match history
-- opening repertoire
-- cinematic checkmate sequences
-- shareable match stories
-- richer README and social replay exports
+- [ ] themed boards and piece sets
+- [ ] reactive soundscape
+- [ ] achievements and match history
+- [ ] opening repertoire
+- [ ] cinematic checkmate sequences
+- [ ] shareable match stories
+- [ ] richer social replay exports
+- [ ] optional Artificial Intelligence narration
 
 ---
 
 ## Status
 
-**Foundation build · playable · under active development**
+**Act II build · playable · actively developing**
 
-The repository began as a one-line README. It now contains the first playable Black Crown arena, a responsive gothic interface, local game persistence, an optional Artificial Intelligence opponent, deployment wiring, and a live animated gameplay showcase designed specifically for GitHub.
+THE BLACK CROWN now has an entrance experience, a dedicated game chamber, custom gODtECH engraving, drag-and-drop play, a promotion choice chamber, Crown Events for high-impact moves, and a deterministic end-of-game story system built from the actual match history.
 
 > **Built for experimentation. Designed to grow teeth.**
