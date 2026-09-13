@@ -27,6 +27,9 @@ jobs:
       - name: Syntax check game engine
         run: node --check app.js
 
+      - name: Syntax check Chronicle replay
+        run: node --check chronicle-replay.js
+
       - name: Syntax check Crown Event director
         run: node --check crown-events.js
 
