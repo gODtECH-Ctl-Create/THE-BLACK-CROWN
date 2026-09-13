@@ -8,8 +8,6 @@
 
 `ENTRANCE → GAME CHAMBER → PLAY → CROWN EVENTS → RESULT → THE CHRONICLE`
 
-The entrance establishes the world. The game chamber focuses on the board. Important chess moments escalate visually, while the end-of-game Chronicle turns the recorded match into a narrative.
-
 ## Current build
 
 - Real chess rules through Chess.js
