@@ -51,6 +51,17 @@
   letter-spacing: .04em;
 }
 
+#aiToggle:disabled + .switch {
+  opacity: .62;
+  border-color: rgba(194,172,126,.42);
+  cursor: not-allowed;
+}
+
+#aiToggle:disabled + .switch::after {
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(194,172,126,.25);
+}
+
 @media (max-width: 660px) {
   .difficulty-control select { min-height: 42px; }
 }
