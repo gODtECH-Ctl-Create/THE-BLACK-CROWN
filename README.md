@@ -48,7 +48,7 @@ The opening screen establishes the world first. The game chamber is a separate s
 | ♛ **Crown AI** | Lightweight Black opponent using material, tactical, central-control and check signals. |
 | ◈ **Drag or click play** | Move pieces by selecting squares or dragging pieces into legal targets. |
 | ⚔ **Crown Events** | Important chess moments trigger differentiated visual effects instead of every move getting the same animation. |
-| ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own narrative treatment. |
+| ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own event treatment and narrative. |
 | ☠ **Major captures** | Queen captures, heavy-piece captures and other material swings can trigger stronger events. |
 | 👑 **Promotion Chamber** | A pawn reaching the final rank pauses the match and asks for Queen, Rook, Bishop or Knight. |
 | ◌ **The Chronicle** | Every move gets a readable narrative entry, while important moments receive additional story text. |
@@ -103,7 +103,7 @@ At the end of a match, the game can open **The Crown Chronicle**.
 The chronicle is generated from the actual move history. It includes:
 
 - every move as a narrative entry
-- Special move descriptions
+- special move descriptions
 - major capture moments
 - check and checkmate moments
 - a battle-quality summary
