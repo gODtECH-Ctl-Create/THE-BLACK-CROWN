@@ -36,8 +36,17 @@ jobs:
       - name: Syntax check promotion transformation director
         run: node --check promotion-transformation.js
 
+      - name: Syntax check Crown difficulty engine
+        run: node --check crown-difficulty.js
+
+      - name: Syntax check difficulty controller
+        run: node --check difficulty-controller.js
+
       - name: Install chess.js for rule audit
         run: npm install --no-save chess.js@1.4.0
 
       - name: Run special move audit
         run: node tests/special-moves.mjs
+
+      - name: Run Crown difficulty audit
+        run: node tests/difficulty.mjs
