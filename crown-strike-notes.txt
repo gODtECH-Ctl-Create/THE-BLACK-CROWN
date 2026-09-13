@@ -1,0 +1,2 @@
+Phase: Pawn takes Queen cinematic event
+Intent: dedicated presentation-only effect for a pawn capturing a queen. No chess rules are changed.
