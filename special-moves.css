@@ -1,0 +1,38 @@
+/* THE BLACK CROWN · Special move signatures */
+
+body[data-special-move='castle-kingside'] .board-frame {
+  box-shadow: 0 0 0 1px rgba(194, 172, 126, .22), 0 0 80px rgba(194, 172, 126, .07);
+}
+
+body[data-special-move='castle-queenside'] .board-frame {
+  box-shadow: 0 0 0 1px rgba(151, 126, 78, .25), 0 0 95px rgba(151, 126, 78, .08);
+}
+
+body[data-special-move='en-passant'] .event-caption {
+  letter-spacing: .12em;
+}
+
+body[data-special-move^='promotion-'] .event-caption,
+body[data-special-move^='underpromotion-'] .event-caption {
+  letter-spacing: .07em;
+}
+
+body[data-special-move='promotion-queen'] .board-frame {
+  filter: brightness(1.07);
+}
+
+body[data-special-move='underpromotion-knight'] .board-frame,
+body[data-special-move='underpromotion-bishop'] .board-frame,
+body[data-special-move='underpromotion-rook'] .board-frame {
+  box-shadow: 0 0 0 1px rgba(190, 160, 110, .18), 0 0 72px rgba(190, 160, 110, .06);
+}
+
+body[data-special-move] .event-caption > span:first-child {
+  font-size: .68rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-special-move='promotion-queen'] .board-frame {
+    filter: none;
+  }
+}
