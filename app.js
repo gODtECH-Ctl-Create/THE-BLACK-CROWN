@@ -684,6 +684,11 @@ function buildStory() {
   matchEvents.forEach((event) => {
     const article = document.createElement('article');
     article.className = `story-entry severity-${Math.min(10, event.severity)}`;
+    article.dataset.ply = String(event.ply);
+    article.dataset.fen = event.fen;
+    article.dataset.from = event.from;
+    article.dataset.to = event.to;
+    article.dataset.severity = String(event.severity);
     article.innerHTML = `
       <div class="story-marker"><span>${String(event.ply).padStart(2, '0')}</span></div>
       <div class="story-entry-body">
