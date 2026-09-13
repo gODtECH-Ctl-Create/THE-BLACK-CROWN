@@ -1,0 +1,228 @@
+/* THE BLACK CROWN · Phase 2: Crown Event visual direction */
+
+.event-fx {
+  mix-blend-mode: screen;
+}
+
+.event-fx::before,
+.event-fx::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(42vw, 520px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(194, 172, 126, .0);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(.25);
+  opacity: 0;
+  pointer-events: none;
+}
+
+body[data-crown-event='castle'] .event-fx::before,
+body[data-crown-event='en-passant'] .event-fx::before,
+body[data-crown-event='promotion'] .event-fx::before,
+body[data-crown-event='underpromotion'] .event-fx::before {
+  animation: crown-ring 900ms cubic-bezier(.18,.74,.18,1) both;
+  border-color: rgba(194, 172, 126, .22);
+}
+
+body[data-crown-event='queen-hunt'] .event-fx::before,
+body[data-crown-event='queen-capture'] .event-fx::before,
+body[data-crown-event='heavy-capture'] .event-fx::before {
+  width: min(54vw, 680px);
+  animation: crown-ring 1200ms cubic-bezier(.1,.78,.18,1) both;
+  border-color: rgba(205, 170, 95, .30);
+}
+
+body[data-crown-event='check'] .event-fx::before,
+body[data-crown-event='major-check'] .event-fx::before {
+  width: min(46vw, 600px);
+  animation: danger-ring 1050ms cubic-bezier(.16,.72,.16,1) both;
+  border-color: rgba(155, 42, 42, .34);
+}
+
+body[data-crown-event='checkmate'] .event-fx::before {
+  width: min(70vw, 900px);
+  border-width: 2px;
+  animation: mate-ring 1700ms cubic-bezier(.12,.78,.12,1) both;
+  border-color: rgba(155, 42, 42, .38);
+}
+
+.event-fx::after {
+  width: min(26vw, 320px);
+  box-shadow: 0 0 90px rgba(194, 172, 126, .10), inset 0 0 60px rgba(194, 172, 126, .05);
+}
+
+body[data-crown-event='queen-hunt'] .event-fx::after,
+body[data-crown-event='queen-capture'] .event-fx::after {
+  animation: queen-core 900ms cubic-bezier(.12,.78,.18,1) both;
+  border-color: rgba(205,170,95,.28);
+}
+
+body[data-crown-event='checkmate'] .event-fx::after {
+  width: min(34vw, 420px);
+  animation: mate-core 1500ms cubic-bezier(.12,.8,.12,1) both;
+  border-color: rgba(155, 42, 42, .26);
+  box-shadow: 0 0 120px rgba(155, 42, 42, .18), inset 0 0 90px rgba(155, 42, 42, .10);
+}
+
+@keyframes crown-ring {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.25); }
+  14% { opacity: .65; }
+  60% { opacity: .22; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.55); }
+}
+
+@keyframes danger-ring {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.32); }
+  16% { opacity: .8; }
+  30% { opacity: .42; transform: translate(-50%,-50%) scale(.70); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.35); }
+}
+
+@keyframes queen-core {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.2); }
+  18% { opacity: .9; }
+  42% { opacity: .32; transform: translate(-50%,-50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(.72); }
+}
+
+@keyframes mate-ring {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.12) rotate(-8deg); }
+  12% { opacity: .9; }
+  55% { opacity: .28; transform: translate(-50%,-50%) scale(1.06) rotate(4deg); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.42) rotate(0deg); }
+}
+
+@keyframes mate-core {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.18); }
+  18% { opacity: .82; }
+  45% { opacity: .25; transform: translate(-50%,-50%) scale(1.04); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(.84); }
+}
+
+body[data-crown-event='queen-hunt'] .board-frame,
+body[data-crown-event='queen-capture'] .board-frame {
+  animation: queen-impact 760ms cubic-bezier(.12,.86,.14,1) both;
+}
+
+body[data-crown-event='heavy-capture'] .board-frame {
+  animation: heavy-impact 600ms ease both;
+}
+
+body[data-crown-event='castle'] .board-frame,
+body[data-crown-event='en-passant'] .board-frame,
+body[data-crown-event='promotion'] .board-frame,
+body[data-crown-event='underpromotion'] .board-frame {
+  animation: ritual-pulse 820ms ease both;
+}
+
+body[data-crown-event='check'] .board-frame,
+body[data-crown-event='major-check'] .board-frame {
+  animation: check-pulse 760ms ease both;
+}
+
+body[data-crown-event='checkmate'] .board-frame {
+  animation: mate-impact 1300ms cubic-bezier(.12,.78,.12,1) both;
+}
+
+@keyframes queen-impact {
+  0% { transform: scale(1); }
+  18% { transform: scale(1.007) translateX(-4px); }
+  32% { transform: scale(1.009) translateX(4px); }
+  46% { transform: scale(1.005) translateX(-2px); }
+  100% { transform: scale(1); }
+}
+
+@keyframes heavy-impact {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.004); }
+  40% { transform: scale(.998); }
+  100% { transform: scale(1); }
+}
+
+@keyframes ritual-pulse {
+  0% { filter: brightness(1); }
+  35% { filter: brightness(1.10); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes check-pulse {
+  0% { filter: brightness(1); }
+  15% { filter: brightness(.82); }
+  30% { filter: brightness(1.08); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes mate-impact {
+  0% { filter: brightness(1); transform: scale(1); }
+  16% { filter: brightness(1.14); transform: scale(1.01); }
+  34% { filter: brightness(.74); transform: scale(1.006); }
+  100% { filter: brightness(.98); transform: scale(1); }
+}
+
+.event-crest {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(70px, 11vw, 150px);
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  color: rgba(194,172,126,.78);
+  text-shadow: 0 0 26px rgba(194,172,126,.18);
+  animation: crest-rise 900ms cubic-bezier(.18,.8,.16,1) both;
+}
+
+.event-crest-check,
+.event-crest-major-check,
+.event-crest-checkmate { color: rgba(155,42,42,.78); text-shadow: 0 0 32px rgba(155,42,42,.22); }
+.event-crest-checkmate { animation: crest-mate 1500ms cubic-bezier(.12,.8,.12,1) both; font-size: clamp(88px, 15vw, 190px); }
+.event-crest-queen-hunt { animation: crest-strike 1050ms cubic-bezier(.12,.84,.12,1) both; }
+
+@keyframes crest-rise {
+  0% { opacity: 0; transform: scale(.45) translateY(18px); filter: blur(8px); }
+  18% { opacity: .55; }
+  45% { opacity: .20; transform: scale(1.05) translateY(0); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.18) translateY(-8px); }
+}
+
+@keyframes crest-strike {
+  0% { opacity: 0; transform: scale(.25) rotate(-8deg); filter: blur(8px); }
+  16% { opacity: .75; }
+  34% { opacity: .34; transform: scale(1.08) rotate(0); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.22) rotate(2deg); }
+}
+
+@keyframes crest-mate {
+  0% { opacity: 0; transform: scale(.30); filter: blur(10px); }
+  16% { opacity: .85; }
+  45% { opacity: .30; transform: scale(1); filter: blur(0); }
+  100% { opacity: 0; transform: scale(1.14); }
+}
+
+body[data-crown-event] .event-caption {
+  z-index: 80;
+  text-shadow: 0 2px 30px rgba(0,0,0,.85);
+}
+
+body[data-crown-event='queen-hunt'] .event-caption,
+body[data-crown-event='queen-capture'] .event-caption {
+  letter-spacing: .04em;
+}
+
+body[data-crown-event='checkmate'] .event-caption {
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .event-fx::before,
+  .event-fx::after,
+  .event-crest,
+  body[data-crown-event] .board-frame {
+    animation: none !important;
+  }
+}
