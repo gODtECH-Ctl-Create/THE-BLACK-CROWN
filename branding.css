@@ -1,4 +1,4 @@
-/* gODtECH is a signature, not the headline. Keep every visible mark deliberately quiet. */
+/* The maker mark is a signature, never the headline. */
 .entrance-screen .eyebrow,
 .entrance-screen .entrance-meta span:nth-child(2),
 .entrance-screen .engraving,
@@ -8,8 +8,8 @@
 .game-screen .side-inscription,
 .game-screen .footer-bar span:first-child,
 .story-footer span {
-  color: rgba(194, 172, 126, .13) !important;
-  opacity: .7;
+  color: rgba(194, 172, 126, .085) !important;
+  opacity: .62;
 }
 
 .entrance-screen .eyebrow {
@@ -31,10 +31,10 @@
 }
 
 .game-screen .board-seal {
-  color: rgba(194, 172, 126, .18);
+  color: rgba(194, 172, 126, .13);
 }
 
 body::before {
-  color: rgba(255, 255, 255, .012) !important;
+  color: rgba(255, 255, 255, .009) !important;
   font-size: clamp(100px, 20vw, 360px);
 }
