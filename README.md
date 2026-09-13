@@ -18,7 +18,7 @@
 
 ## The experience
 
-THE BLACK CROWN is intentionally structured like a game instead of a utility.
+THE BLACK CROWN is structured like a game, not a utility.
 
 ```text
 ENTRANCE
@@ -49,7 +49,7 @@ The opening screen establishes the world first. The game chamber is a separate s
 | ◈ **Drag or click play** | Move pieces by selecting squares or dragging pieces into legal targets. |
 | ⚔ **Crown Events** | Important chess moments trigger differentiated visual effects instead of every move getting the same animation. |
 | ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own event treatment and narrative. |
-| ☠ **Major captures** | Queen captures, heavy-piece captures and other material swings can trigger stronger events. |
+| ☠ **Major captures** | Queen captures and other material swings can trigger stronger events. |
 | 👑 **Promotion Chamber** | A pawn reaching the final rank pauses the match and asks for Queen, Rook, Bishop or Knight. |
 | ◌ **The Chronicle** | Every move gets a readable narrative entry, while important moments receive additional story text. |
 | ⌂ **Local memory** | The current game, event history, board orientation and opponent setting survive refresh in browser storage. |
@@ -62,7 +62,7 @@ The opening screen establishes the world first. The game chamber is a separate s
 
 ## The Crown Event system
 
-The game now treats chess moments as different levels of importance.
+The game treats chess moments as different levels of importance.
 
 ```text
 NORMAL MOVE
@@ -84,7 +84,7 @@ Examples include:
 
 - **Knight takes Queen** → **THE QUEEN FALLS**
 - **Queen is captured** → **THE CROWN IS TAKEN**
-- **Rook or other heavy piece falls** → significant capture event
+- **Heavy piece falls** → significant capture event
 - **Castling** → **THE FORTRESS TURNS**
 - **En passant** → **THE SHADOW CAPTURE**
 - **Promotion** → **THE PAWN BECOMES CROWN**
@@ -92,24 +92,17 @@ Examples include:
 - **Check** → **THE KING IS HUNTED** or **CHECK**
 - **Checkmate** → **THE FINAL BLOW**
 
-The visual intensity scales with the importance of the event. The goal is contrast: not every move should explode, because the rare moments need room to matter.
+The visual intensity scales with importance. The contrast is deliberate: rare moments should feel rare.
 
 ---
 
 ## The game story
 
-At the end of a match, the game can open **The Crown Chronicle**.
+At the end of a match, **The Crown Chronicle** turns the recorded move history into a narrative timeline.
 
-The chronicle is generated from the actual move history. It includes:
+It includes every move, special-move descriptions, major capture moments, check and checkmate moments, a battle-quality summary, and match statistics.
 
-- every move as a narrative entry
-- special move descriptions
-- major capture moments
-- check and checkmate moments
-- a battle-quality summary
-- move, capture, check and Crown Event counts
-
-The current narrator is intentionally dependency-light and deterministic. It uses the recorded chess state and event classification rather than calling an external language model. That leaves a clean seam for a richer Artificial Intelligence narrator later.
+The current narrator is intentionally dependency-light and deterministic. It uses chess state and event classification rather than an external language model. A richer Artificial Intelligence narrator can be added later without replacing the game engine.
 
 Example tone:
 
@@ -171,90 +164,12 @@ python3 -m http.server 4173
 
 Open `http://localhost:4173`.
 
-A local static server is recommended because the browser loads Chess.js as an ECMAScript Module.
-
----
-
-## Project map
-
-```text
-THE-BLACK-CROWN/
-├── index.html
-├── styles.css
-├── app.js
-├── favicon.svg
-├── manifest.json
-├── sw.js
-├── assets/
-│   ├── black-crown-gameplay.gif
-│   ├── black-crown-demo.svg
-│   ├── 01-board-awakens.svg
-│   ├── 02-chronicle.svg
-│   └── 03-crown-ai.svg
-└── .github/
-    └── workflows/
-        └── deploy-pages.yml
-```
-
----
-
-## Design doctrine
-
-**The board wins.** Everything around it frames the decision.
-
-**Motion has meaning.** Hover, movement, capture, check, special moves and checkmate should not feel interchangeable.
-
-**Darkness has texture.** Obsidian, aged paper, muted metal, restrained blood-red and engraved gold create the visual language.
-
-**gODtECH is part of the artifact.** The name appears as an intentional signature through the entrance, board frame, inscriptions and chronicle.
-
-**The archive remembers.** A finished game should leave more behind than a result. It should leave a story.
-
----
-
-## Roadmap
-
-### Act II · Make the game dangerous
-
-- [x] separate entrance and game chamber
-- [x] drag-and-drop movement
-- [x] promotion choice chamber
-- [x] Crown Event system
-- [x] special-move effects and narration
-- [x] end-of-game Chronicle
-- [ ] pressure-aware chess clocks
-- [ ] stronger Crown AI with personality levels
-- [ ] opening recognition
-- [ ] cinematic replay mode
-- [ ] named local game saves
-
-### Act III · Build the arena
-
-- [ ] online rooms
-- [ ] private match links
-- [ ] friend invites
-- [ ] spectator mode
-- [ ] reconnect and resume
-- [ ] persistent player profiles
-- [ ] server-authoritative move validation
-
-### Act IV · Build the mythology
-
-- [ ] themed boards and piece sets
-- [ ] reactive soundscape
-- [ ] achievements and match history
-- [ ] opening repertoire
-- [ ] cinematic checkmate sequences
-- [ ] shareable match stories
-- [ ] richer social replay exports
-- [ ] optional Artificial Intelligence narration
-
 ---
 
 ## Status
 
 **Act II build · playable · actively developing**
 
-THE BLACK CROWN now has an entrance experience, a dedicated game chamber, custom gODtECH engraving, drag-and-drop play, a promotion choice chamber, Crown Events for high-impact moves, and a deterministic end-of-game story system built from the actual match history.
+The current branch contains the entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment and the end-of-game Chronicle. The next major slice is pressure-aware clocks and a stronger Crown AI.
 
 > **Built for experimentation. Designed to grow teeth.**
