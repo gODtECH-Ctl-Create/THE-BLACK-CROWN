@@ -82,6 +82,6 @@ Open `http://localhost:4173`.
 
 **Act II build · playable · actively developing**
 
-Current work in this branch: entrance/game-chamber split, gODtECH engraving, drag-and-drop movement, promotion choice, Crown Events, special-move treatment, and the end-of-game Chronicle.
+This branch contains the entrance/game-chamber split, gODtECH engraving, drag-and-drop movement, promotion choice, Crown Events, special-move treatment, and the end-of-game Chronicle.
 
 > **Built for experimentation. Designed to grow teeth.**
