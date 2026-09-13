@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Syntax check landing script
+        run: node --check landing.js
+
       - name: Syntax check game engine
         run: node --check app.js
 
