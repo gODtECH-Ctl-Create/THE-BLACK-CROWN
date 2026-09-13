@@ -32,8 +32,8 @@
     const save = getSavedBattle();
     if (!save?.moves?.length) return;
     const existing = readRecords();
-    const last = existing[0];
     const finalMove = save.moves.at(-1);
+    const last = existing[0];
     if (last?.moves?.length === save.moves.length && last?.moves?.at(-1)?.from === finalMove?.from && last?.moves?.at(-1)?.to === finalMove?.to) return;
 
     const badge = document.getElementById('resultBadge')?.textContent.trim() || '';
@@ -41,7 +41,7 @@
     const copy = document.getElementById('resultCopy')?.textContent.trim() || 'The archive preserves this battle.';
     const events = Array.isArray(save.matchEvents) ? save.matchEvents : [];
     const result = badge.startsWith('WHITE') ? 'win' : badge.startsWith('BLACK') ? 'loss' : 'draw';
-    const record = {
+    existing.unshift({
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
       createdAt: new Date().toISOString(),
       result,
@@ -52,8 +52,7 @@
       qualityCopy: copy,
       moves: save.moves,
       events,
-    };
-    existing.unshift(record);
+    });
     saveRecords(existing);
     renderLandingRecords();
   }
@@ -116,7 +115,7 @@
           <span class="record-kicker">${record.mode === 'crown' ? `PLAY WITH CROWN · ${String(record.difficulty).toUpperCase()}` : 'TWO PLAYER · LOCAL'}</span>
           <h3>${record.title || 'THE BATTLE'}</h3>
           <p>${record.qualityCopy || 'The archive preserves this battle.'}</p>
-          <div class="record-meta"><span>${formatDate(record.createdAt)}</span><span>${record.moves?.length || 0} PLY</span><span>${record.reason.toUpperCase()}</span></div>
+          <div class="record-meta"><span>${formatDate(record.createdAt)}</span><span>${record.moves?.length || 0} PLY</span><span>${record.reason || 'COMPLETE'}</span></div>
         </div>
         <button class="action-button record-open" type="button" data-record-id="${record.id}">VIEW RECORD <span>↗</span></button>`;
       list.appendChild(article);
@@ -174,14 +173,14 @@
   }
 
   function watchResult() {
-    let lastHidden = resultOverlay.hidden;
-    const check = () => {
-      const current = resultOverlay.hidden;
-      if (lastHidden && !current) recordCompletedBattle();
-      lastHidden = current;
-      window.requestAnimationFrame(check);
-    };
-    check();
+    const observer = new MutationObserver(() => {
+      if (!resultOverlay.hidden && !resultOverlay.dataset.recorded) {
+        resultOverlay.dataset.recorded = '1';
+        recordCompletedBattle();
+      }
+      if (resultOverlay.hidden) delete resultOverlay.dataset.recorded;
+    });
+    observer.observe(resultOverlay, { attributes: true, attributeFilter: ['hidden'] });
   }
 
   injectLandingSection();
