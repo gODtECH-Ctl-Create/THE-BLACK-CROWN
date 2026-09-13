@@ -6,17 +6,22 @@
 
 ## Current experience
 
-`ENTRANCE → GAME CHAMBER → PLAY → CROWN EVENTS → RESULT → THE CHRONICLE`
+`LANDING → MATCH SETUP → GAME CHAMBER → CROWN EVENTS → RESULT → CHRONICLE REPLAY`
 
 ## Current build
 
 - Real chess rules through Chess.js
-- Crown Artificial Intelligence (AI)
+- Local Two Player and Play With Crown match modes
+- Crown difficulty: Beginner, Intermediate, Hard and Crown
 - Click and drag movement
 - Promotion choice for Queen, Rook, Bishop or Knight
 - Crown Events for important captures, checks, checkmate and special moves
-- gODtECH engraving in the interface and board frame
+- Dedicated pawn-versus-Queen strike effect
+- Dark pawn promotion transformation effect
+- gODtECH engraving kept deliberately subtle
+- Compact active-game interface for mobile-first play
 - End-of-game Chronicle with a narrative entry for every move
+- Chronicle replay board with previous/next/play controls and move timeline
 - Local persistence
 - Fog, grain, dust, sound cues and responsive gothic presentation
 
@@ -40,12 +45,20 @@
 
 ## Chronicle
 
-The current story system is deterministic and dependency-light. It uses the recorded chess state and event classification rather than an external language model. A richer Artificial Intelligence narrator can be added later without replacing the game engine.
+The Chronicle is generated from recorded chess state and deterministic event classification. Every move is preserved with its move number, notation, position and narration.
+
+The replay layer reconstructs the recorded positions inside the Chronicle without mutating the live game board. Players can step backward and forward, jump to any move, or play the battle from the opening to the final position.
+
+A richer Artificial Intelligence narrator can be added later without replacing the game engine.
 
 ## Architecture
 
 ```text
-ENTRANCE
+LANDING
+   ↓
+MATCH SETUP
+   ├── TWO PLAYER
+   └── PLAY WITH CROWN → DIFFICULTY
    ↓
 GAME CHAMBER
    ↓
@@ -59,6 +72,7 @@ CROWN EVENT ENGINE
 RESULT
    ↓
 CROWN CHRONICLE
+   └── REPLAY ENGINE → RECORDED POSITIONS
 ```
 
 ## Run locally
