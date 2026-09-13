@@ -21,19 +21,7 @@
 THE BLACK CROWN is structured like a game, not a utility.
 
 ```text
-ENTRANCE
-   ↓
-THE CROWN AWAKENS
-   ↓
-GAME CHAMBER
-   ↓
-PLAY / THINK / ATTACK
-   ↓
-CROWN EVENTS
-   ↓
-CHECKMATE / DRAW
-   ↓
-THE CHRONICLE
+ENTRANCE → THE CROWN AWAKENS → GAME CHAMBER → PLAY → CROWN EVENTS → RESULT → THE CHRONICLE
 ```
 
 The opening screen establishes the world first. The game chamber is a separate space for the board and controls. When the match ends, the archive can tell the story of the battle from the recorded moves.
@@ -47,62 +35,35 @@ The opening screen establishes the world first. The game chamber is a separate s
 | ♟ **Real chess rules** | Legal movement, check, checkmate, draws, castling, en passant, promotion and move history through Chess.js. |
 | ♛ **Crown AI** | Lightweight Black opponent using material, tactical, central-control and check signals. |
 | ◈ **Drag or click play** | Move pieces by selecting squares or dragging pieces into legal targets. |
-| ⚔ **Crown Events** | Important chess moments trigger differentiated visual effects instead of every move getting the same animation. |
-| ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own event treatment and narrative. |
+| ⚔ **Crown Events** | Important moments trigger differentiated effects instead of every move receiving the same animation. |
+| ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own event treatment. |
 | ☠ **Major captures** | Queen captures and other material swings can trigger stronger events. |
 | 👑 **Promotion Chamber** | A pawn reaching the final rank pauses the match and asks for Queen, Rook, Bishop or Knight. |
-| ◌ **The Chronicle** | Every move gets a readable narrative entry, while important moments receive additional story text. |
-| ⌂ **Local memory** | The current game, event history, board orientation and opponent setting survive refresh in browser storage. |
-| ◒ **Atmosphere** | Fog, grain, dust, layered shadows, engraved UI, responsive typography and Web Audio cues create the material world. |
-| 📱 **Responsive chamber** | Desktop and mobile layouts preserve the board as the visual center instead of shrinking it into a dashboard. |
+| ◌ **The Chronicle** | Every move becomes a narrative entry, with stronger writing around important moments. |
+| ⌂ **Local memory** | Current game, event history, board orientation and opponent setting survive refresh. |
+| ◒ **Atmosphere** | Fog, grain, dust, engraved UI, responsive typography and Web Audio cues shape the world. |
 
 **AI** means **Artificial Intelligence**.
 
 ---
 
-## The Crown Event system
-
-The game treats chess moments as different levels of importance.
+## Crown Events
 
 ```text
-NORMAL MOVE
-    ↓
-CAPTURE
-    ↓
-SPECIAL MOVE
-    ↓
-SIGNIFICANT CAPTURE
-    ↓
-MAJOR TACTICAL MOMENT
-    ↓
-CHECK
-    ↓
-CHECKMATE
+NORMAL MOVE → CAPTURE → SPECIAL MOVE → SIGNIFICANT CAPTURE → CHECK → CHECKMATE
 ```
 
-Examples include:
+Examples: **THE QUEEN FALLS**, **THE CROWN IS TAKEN**, **THE FORTRESS TURNS**, **THE SHADOW CAPTURE**, **THE PAWN BECOMES CROWN**, **THE UNEXPECTED CROWN**, **THE KING IS HUNTED**, and **THE FINAL BLOW**.
 
-- **Knight takes Queen** → **THE QUEEN FALLS**
-- **Queen is captured** → **THE CROWN IS TAKEN**
-- **Heavy piece falls** → significant capture event
-- **Castling** → **THE FORTRESS TURNS**
-- **En passant** → **THE SHADOW CAPTURE**
-- **Promotion** → **THE PAWN BECOMES CROWN**
-- **Underpromotion** → **THE UNEXPECTED CROWN**
-- **Check** → **THE KING IS HUNTED** or **CHECK**
-- **Checkmate** → **THE FINAL BLOW**
-
-The visual intensity scales with importance. The contrast is deliberate: rare moments should feel rare.
+Visual intensity scales with importance. The goal is contrast, so rare chess moments feel rare.
 
 ---
 
-## The game story
+## The Crown Chronicle
 
-At the end of a match, **The Crown Chronicle** turns the recorded move history into a narrative timeline.
+At the end of a match, **The Crown Chronicle** turns the recorded move history into a narrative timeline containing every move, special-move descriptions, major capture moments, check and checkmate moments, a battle-quality summary, and match statistics.
 
-It includes every move, special-move descriptions, major capture moments, check and checkmate moments, a battle-quality summary, and match statistics.
-
-The current narrator is intentionally dependency-light and deterministic. It uses chess state and event classification rather than an external language model. A richer Artificial Intelligence narrator can be added later without replacing the game engine.
+The current narrator is intentionally dependency-light and deterministic. It uses chess state and event classification rather than an external language model, leaving a clean seam for richer Artificial Intelligence narration later.
 
 Example tone:
 
@@ -129,28 +90,28 @@ Example tone:
                  │                             │
              ENTRANCE                     GAME CHAMBER
                  │                             │
-                 │                       ┌─────┴─────┐
-                 │                       │           │
-                 │                    BOARD       CONTROLS
-                 │                       │
-                 │                    Chess.js
-                 │                       │
-                 │                  move + position
-                 │                       │
-                 │                ┌──────┴──────┐
-                 │                │             │
-                 │           EVENT ENGINE   LOCAL SAVE
-                 │                │
-                 │        ┌───────┼────────┐
-                 │        ↓       ↓        ↓
-                 │      FX     CHRONICLE  AUDIO
-                 │                │
-                 └────────────────┴──────────────┐
-                                                  ↓
-                                           END-OF-GAME STORY
+                 │                    ┌────────┴────────┐
+                 │                    │                 │
+                 │                  BOARD           CONTROLS
+                 │                    │
+                 │                 Chess.js
+                 │                    │
+                 │             moves + position
+                 │                    │
+                 │             ┌──────┴──────┐
+                 │             │             │
+                 │        EVENT ENGINE   LOCAL SAVE
+                 │             │
+                 │        ┌────┼────┬────┐
+                 │        ↓    ↓    ↓    ↓
+                 │       FX  AUDIO STORY STATS
+                 │                 │
+                 └─────────────────┴───────────────┐
+                                                   ↓
+                                            END-OF-GAME STORY
 ```
 
-The foundation remains static and dependency-light. The chess rules engine is loaded as a pinned ECMAScript Module (ESM). Game state is saved locally and can be restored by replaying the recorded moves.
+The foundation remains static and dependency-light. Chess.js is loaded as a pinned ECMAScript Module (ESM). Game state is saved locally and can be restored by replaying the recorded moves.
 
 ---
 
@@ -170,6 +131,6 @@ Open `http://localhost:4173`.
 
 **Act II build · playable · actively developing**
 
-The current branch contains the entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment and the end-of-game Chronicle. The next major slice is pressure-aware clocks and a stronger Crown AI.
+The current branch contains the entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment and the end-of-game Chronicle. The next major slice is pressure-aware clocks, cinematic replay and a stronger Crown AI.
 
 > **Built for experimentation. Designed to grow teeth.**
