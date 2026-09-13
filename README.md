@@ -4,48 +4,49 @@
 >
 > A gothic chess experience by **gODtECH** where the board is the protagonist, important moves leave a mark, and every finished game becomes a story.
 
-<p align="center">
-  <img src="assets/black-crown-gameplay.gif" alt="Animated gameplay of The Black Crown" width="100%" />
-</p>
-
 ## The experience
 
 THE BLACK CROWN is structured like a game, not a utility:
 
 `ENTRANCE → GAME CHAMBER → PLAY → CROWN EVENTS → RESULT → THE CHRONICLE`
 
-The entrance establishes the world first. The game chamber is a dedicated space for the board and controls. At the end of a match, the archive turns the actual move history into a narrative timeline.
-
 ## What is alive
 
-| System | Experience |
-| --- | --- |
-| ♟ **Real chess rules** | Legal movement, check, checkmate, draws, castling, en passant, promotion and move history through Chess.js. |
-| ♛ **Crown AI** | Lightweight Black opponent using material, tactical, central-control and check signals. |
-| ◈ **Drag or click play** | Move pieces by selecting squares or dragging them into legal targets. |
-| ⚔ **Crown Events** | Important moments trigger differentiated effects instead of every move receiving the same animation. |
-| ✦ **Special moves** | Castling, en passant, promotion and underpromotion receive their own event treatment. |
-| ☠ **Major captures** | Queen captures and other material swings can trigger stronger events. |
-| 👑 **Promotion Chamber** | A pawn reaching the final rank pauses the match and asks for Queen, Rook, Bishop or Knight. |
-| ◌ **The Chronicle** | Every move becomes a narrative entry, with stronger writing around important moments. |
-| ⌂ **Local memory** | Current game, event history, board orientation and opponent setting survive refresh. |
-| ◒ **Atmosphere** | Fog, grain, dust, engraved UI, responsive typography and Web Audio cues shape the world. |
-
-**AI** means **Artificial Intelligence**.
+- Real chess rules through Chess.js
+- Crown Artificial Intelligence (AI)
+- Click and drag movement
+- Promotion choice for Queen, Rook, Bishop or Knight
+- Crown Events for important captures, checks and special moves
+- Custom gODtECH engraving across the interface and board frame
+- End-of-game Chronicle with a narrative entry for every move
+- Local game persistence
+- Fog, grain, dust, sound cues and responsive gothic presentation
 
 ## Crown Events
 
-`NORMAL MOVE → CAPTURE → SPECIAL MOVE → SIGNIFICANT CAPTURE → CHECK → CHECKMATE`
+Normal movement stays restrained. More consequential moments escalate visually.
 
-Examples include **THE QUEEN FALLS**, **THE CROWN IS TAKEN**, **THE FORTRESS TURNS**, **THE SHADOW CAPTURE**, **THE PAWN BECOMES CROWN**, **THE UNEXPECTED CROWN**, **THE KING IS HUNTED**, and **THE FINAL BLOW**.
+**THE QUEEN FALLS** for a Knight taking a Queen.
 
-Visual intensity scales with importance. Rare chess moments are allowed to feel rare.
+**THE CROWN IS TAKEN** for other Queen captures.
+
+**THE FORTRESS TURNS** for castling.
+
+**THE SHADOW CAPTURE** for en passant.
+
+**THE PAWN BECOMES CROWN** for promotion.
+
+**THE UNEXPECTED CROWN** for underpromotion.
+
+**THE KING IS HUNTED** for major checks.
+
+**THE FINAL BLOW** for checkmate.
 
 ## The Crown Chronicle
 
-At the end of a match, **The Crown Chronicle** turns recorded move history into a story containing every move, special-move descriptions, major captures, checks and checkmate, a battle-quality summary, and match statistics.
+At the end of a match, the recorded moves become a narrative timeline with match statistics and stronger prose around consequential moments.
 
-The current narrator is dependency-light and deterministic. It uses chess state and event classification rather than an external language model, leaving a clean seam for richer Artificial Intelligence narration later.
+The narrator is currently deterministic and dependency-light. It does not call an external language model. This keeps the game fully browser-first while leaving room for a future richer AI narrator.
 
 ## Architecture
 
@@ -57,16 +58,14 @@ GAME CHAMBER
 Chess.js → MOVE STATE
    ↓
 CROWN EVENT ENGINE
-   ├── visual effects
-   ├── sound cues
-   └── narrative events
+   ├── VISUAL EFFECTS
+   ├── SOUND CUES
+   └── STORY EVENTS
    ↓
 RESULT
    ↓
 CROWN CHRONICLE
 ```
-
-The project remains a static browser application with Chess.js loaded as a pinned ECMAScript Module (ESM). Game state is saved locally and restored by replaying recorded moves.
 
 ## Run locally
 
@@ -82,6 +81,6 @@ Open `http://localhost:4173`.
 
 **Act II build · playable · actively developing**
 
-This branch contains the entrance/game-chamber split, gODtECH engraving, drag-and-drop movement, promotion choice, Crown Events, special-move treatment, and the end-of-game Chronicle.
+Current branch: entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment, and end-of-game Chronicle.
 
 > **Built for experimentation. Designed to grow teeth.**
