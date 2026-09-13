@@ -4,49 +4,45 @@
 >
 > A gothic chess experience by **gODtECH** where the board is the protagonist, important moves leave a mark, and every finished game becomes a story.
 
-## The experience
+## Current experience
 
 `ENTRANCE → GAME CHAMBER → PLAY → CROWN EVENTS → RESULT → THE CHRONICLE`
 
-The entrance establishes the world. The game chamber focuses entirely on the board and play. The Chronicle turns the recorded match into a narrative timeline when the battle ends.
+The entrance establishes the world. The game chamber focuses on the board. Important chess moments escalate visually, while the end-of-game Chronicle turns the recorded match into a narrative.
 
-## What is alive
+## Current build
 
 - Real chess rules through Chess.js
 - Crown Artificial Intelligence (AI)
 - Click and drag movement
 - Promotion choice for Queen, Rook, Bishop or Knight
 - Crown Events for important captures, checks, checkmate and special moves
-- Custom gODtECH engraving through the visual system and board frame
+- gODtECH engraving in the interface and board frame
 - End-of-game Chronicle with a narrative entry for every move
-- Local game persistence
+- Local persistence
 - Fog, grain, dust, sound cues and responsive gothic presentation
 
-## Crown Events
+## Event language
 
-Normal movement stays restrained. More consequential moments escalate visually.
+**THE QUEEN FALLS** · Knight takes Queen
 
-**THE QUEEN FALLS** for a Knight taking a Queen.
+**THE CROWN IS TAKEN** · other Queen captures
 
-**THE CROWN IS TAKEN** for other Queen captures.
+**THE FORTRESS TURNS** · castling
 
-**THE FORTRESS TURNS** for castling.
+**THE SHADOW CAPTURE** · en passant
 
-**THE SHADOW CAPTURE** for en passant.
+**THE PAWN BECOMES CROWN** · promotion
 
-**THE PAWN BECOMES CROWN** for promotion.
+**THE UNEXPECTED CROWN** · underpromotion
 
-**THE UNEXPECTED CROWN** for underpromotion.
+**THE KING IS HUNTED** · major check
 
-**THE KING IS HUNTED** for major checks.
+**THE FINAL BLOW** · checkmate
 
-**THE FINAL BLOW** for checkmate.
+## Chronicle
 
-## The Crown Chronicle
-
-At the end of a match, the recorded moves become a narrative timeline with match statistics and stronger prose around consequential moments.
-
-The narrator is currently deterministic and dependency-light. It does not call an external language model. This keeps the game browser-first while leaving a clean seam for a richer Artificial Intelligence narrator later.
+The current story system is deterministic and dependency-light. It uses the recorded chess state and event classification rather than an external language model. A richer Artificial Intelligence narrator can be added later without replacing the game engine.
 
 ## Architecture
 
@@ -80,7 +76,5 @@ Open `http://localhost:4173`.
 ## Status
 
 **Act II build · playable · actively developing**
-
-Current branch includes the entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment and the end-of-game Chronicle.
 
 > **Built for experimentation. Designed to grow teeth.**
