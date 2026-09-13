@@ -212,28 +212,28 @@ function renderBoard() {
 }
 
 function isDrawState() {
-      return Boolean(
-        (typeof game.isDraw === 'function' && game.isDraw()) ||
-        (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) ||
-        (typeof game.isStalemate === 'function' && game.isStalemate()) ||
-        (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) ||
-        (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves())
-      );
-    }
+  return Boolean(
+    (typeof game.isDraw === 'function' && game.isDraw()) ||
+    (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) ||
+    (typeof game.isStalemate === 'function' && game.isStalemate()) ||
+    (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) ||
+    (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves())
+  );
+}
 
-    function isGameOverState() {
-      return game.isCheckmate() || isDrawState();
-    }
+function isGameOverState() {
+  return game.isCheckmate() || isDrawState();
+}
 
-    function getDrawReason() {
-      if (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) return 'Insufficient material';
-      if (typeof game.isStalemate === 'function' && game.isStalemate()) return 'Stalemate';
-      if (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) return 'Threefold repetition';
-      if (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves()) return 'Fifty-move rule';
-      return 'Draw';
-    }
+function getDrawReason() {
+  if (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) return 'Insufficient material';
+  if (typeof game.isStalemate === 'function' && game.isStalemate()) return 'Stalemate';
+  if (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) return 'Threefold repetition';
+  if (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves()) return 'Fifty-move rule';
+  return 'Draw';
+}
 
-    function updatePanels() {
+function updatePanels() {
   const history = game.history({ verbose: true });
   const turn = game.turn();
   const fen = game.fen().split(' ');
@@ -275,6 +275,7 @@ function isDrawState() {
     moveList.appendChild(row);
   }
   moveList.scrollTop = moveList.scrollHeight;
+  moveList.scrollLeft = moveList.scrollWidth;
 }
 
 function handleSquare(squareName) {
@@ -360,34 +361,34 @@ function restoreSavedGame() {
 }
 
 function clearAiTimer() {
-      if (aiTimerId !== null) {
-        window.clearTimeout(aiTimerId);
-        aiTimerId = null;
-      }
+  if (aiTimerId !== null) {
+    window.clearTimeout(aiTimerId);
+    aiTimerId = null;
+  }
+  aiThinking = false;
+}
+
+function scheduleAiMove(delay = 760) {
+  clearAiTimer();
+  if (!aiToggle.checked || isGameOverState() || game.turn() !== 'b') return;
+
+  const session = gameSessionId;
+  aiThinking = true;
+  updatePanels();
+  aiTimerId = window.setTimeout(() => {
+    aiTimerId = null;
+    if (session !== gameSessionId || !aiToggle.checked || isGameOverState() || game.turn() !== 'b') {
       aiThinking = false;
+      renderBoard();
+      return;
     }
+    makeAiMove();
+    aiThinking = false;
+    renderBoard();
+  }, delay);
+}
 
-    function scheduleAiMove(delay = 760) {
-      clearAiTimer();
-      if (!aiToggle.checked || isGameOverState() || game.turn() !== 'b') return;
-
-      const session = gameSessionId;
-      aiThinking = true;
-      updatePanels();
-      aiTimerId = window.setTimeout(() => {
-        aiTimerId = null;
-        if (session !== gameSessionId || !aiToggle.checked || isGameOverState() || game.turn() !== 'b') {
-          aiThinking = false;
-          renderBoard();
-          return;
-        }
-        makeAiMove();
-        aiThinking = false;
-        renderBoard();
-      }, delay);
-    }
-
-    function updateDocumentTitle() {
+function updateDocumentTitle() {
   if (game.isCheckmate()) document.title = 'CHECKMATE | THE BLACK CROWN';
   else if (game.isDraw()) document.title = 'DRAW | THE BLACK CROWN';
   else document.title = `THE BLACK CROWN | ${game.turn() === 'w' ? 'White' : 'Black'} to move`;
@@ -519,49 +520,49 @@ function moveNarration(move) {
 }
 
 function playMove(from, to, promotion = 'q', fromAi = false) {
-      if ((!fromAi && aiThinking) || isGameOverState()) return;
-      try {
-        const move = game.move({ from, to, promotion });
-        if (!move) return;
+  if ((!fromAi && aiThinking) || isGameOverState()) return;
+  try {
+    const move = game.move({ from, to, promotion });
+    if (!move) return;
 
-        movingSquare = to;
-        lastMove = { from, to };
-        selectedSquare = null;
-        matchHistory = game.history({ verbose: true });
-        const event = createEvent(move);
-        matchEvents.push(event);
-        checkEvents = matchHistory.filter((item) => item.san?.includes('+') || item.san?.includes('#')).length;
-        captureEvents = matchHistory.filter((item) => item.captured).length;
-        persistGame();
+    movingSquare = to;
+    lastMove = { from, to };
+    selectedSquare = null;
+    matchHistory = game.history({ verbose: true });
+    const event = createEvent(move);
+    matchEvents.push(event);
+    checkEvents = matchHistory.filter((item) => item.san?.includes('+') || item.san?.includes('#')).length;
+    captureEvents = matchHistory.filter((item) => item.captured).length;
+    persistGame();
 
-        if (event.severity >= 3) triggerCrownEvent(event);
-        playSound(event.type === 'checkmate' ? 'mate' : isCapture(move) ? 'capture' : 'move');
+    if (event.severity >= 3) triggerCrownEvent(event);
+    playSound(event.type === 'checkmate' ? 'mate' : isCapture(move) ? 'capture' : 'move');
 
-        renderBoard();
-        updateDocumentTitle();
+    renderBoard();
+    updateDocumentTitle();
 
-        window.setTimeout(() => {
-          movingSquare = null;
-          renderBoard();
-        }, 460);
+    window.setTimeout(() => {
+      movingSquare = null;
+      renderBoard();
+    }, 460);
 
-        if (isGameOverState()) {
-          clearAiTimer();
-          window.setTimeout(showResult, 650);
-          return;
-        }
-
-        if (!fromAi && aiToggle.checked && game.turn() === 'b') {
-          scheduleAiMove();
-        }
-      } catch (error) {
-        console.warn('Black Crown rejected a move.', error);
-        selectedSquare = null;
-        renderBoard();
-      }
+    if (isGameOverState()) {
+      clearAiTimer();
+      window.setTimeout(showResult, 650);
+      return;
     }
 
-    function makeAiMove() {
+    if (!fromAi && aiToggle.checked && game.turn() === 'b') {
+      scheduleAiMove();
+    }
+  } catch (error) {
+    console.warn('Black Crown rejected a move.', error);
+    selectedSquare = null;
+    renderBoard();
+  }
+}
+
+function makeAiMove() {
   if (isGameOverState() || game.turn() !== 'b') return;
   const moves = game.moves({ verbose: true });
   if (!moves.length) return;
@@ -800,15 +801,15 @@ $('#storyNewGame').addEventListener('click', () => {
   resetGame();
 });
 aiToggle.addEventListener('change', () => {
-      selectedSquare = null;
-      if (!aiToggle.checked) {
-        clearAiTimer();
-      } else if (game.turn() === 'b' && !isGameOverState()) {
-        scheduleAiMove(420);
-      }
-      persistGame();
-      renderBoard();
-    });
+  selectedSquare = null;
+  if (!aiToggle.checked) {
+    clearAiTimer();
+  } else if (game.turn() === 'b' && !isGameOverState()) {
+    scheduleAiMove(420);
+  }
+  persistGame();
+  renderBoard();
+});
 
 storyOverlay.addEventListener('click', (event) => {
   if (event.target === storyOverlay) closeStory();
