@@ -26,3 +26,12 @@ jobs:
 
       - name: Syntax check Crown Event director
         run: node --check crown-events.js
+
+      - name: Syntax check special move auditor
+        run: node --check special-move-audit.js
+
+      - name: Install chess.js for rule audit
+        run: npm install --no-save chess.js@1.4.0
+
+      - name: Run special move audit
+        run: node tests/special-moves.mjs
