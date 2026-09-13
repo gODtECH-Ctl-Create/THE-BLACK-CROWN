@@ -116,19 +116,13 @@
     }
   }, true);
 
-  function injectLinks() {
-    const nav = screen.querySelector('.landing-nav-links');
-    if (nav && !nav.querySelector('.landing-settings-link')) nav.insertAdjacentHTML('beforeend', '<a class="landing-settings-link" href="#settings">SETTINGS</a>');
-    screen.querySelectorAll('.landing-settings-link').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); open(); }));
-    document.getElementById('gameSettingsBtn')?.addEventListener('click', open, { once: true });
-  }
+  document.getElementById('gameSettingsBtn')?.addEventListener('click', open, { once: true });
 
   window.addEventListener('black-crown-settings-changed', (event) => {
     const nextDifficulty = event.detail?.difficulty;
     if (nextDifficulty) document.documentElement.dataset.defaultDifficulty = nextDifficulty;
   });
 
-  injectLinks();
   sync();
   window.blackCrownSettings = { open, close, read, save: () => { save(); sync(); } };
 })();
