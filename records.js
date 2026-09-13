@@ -3,9 +3,7 @@
   const RECORDS_KEY = 'black-crown-records';
   const screen = document.getElementById('entranceScreen');
   const resultOverlay = document.getElementById('resultOverlay');
-  const storyOverlay = document.getElementById('storyOverlay');
-  const moveList = document.getElementById('moveList');
-  if (!screen || !resultOverlay || !storyOverlay || !moveList) return;
+  if (!screen || !resultOverlay) return;
 
   const readRecords = () => {
     try {
@@ -18,73 +16,56 @@
 
   const saveRecords = (records) => localStorage.setItem(RECORDS_KEY, JSON.stringify(records.slice(0, 50)));
 
-  const state = { selectedId: null };
-
-  function getCurrentMatchData() {
-    const moveNodes = [...moveList.querySelectorAll('.move-san')];
-    const sans = moveNodes.map((node) => node.textContent.trim()).filter(Boolean);
-    if (!sans.length) return null;
-    return sans;
-  }
-
-  function makeRecord({ result = 'completed', reason = '', mode = 'local', difficulty = 'standard', winner = null, quality = 'A BATTLE', qualityCopy = '', title = 'THE BATTLE', matchEvents = [], moves = [] }) {
-    const now = new Date();
-    return {
-      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      createdAt: now.toISOString(),
-      result,
-      reason,
-      mode,
-      difficulty,
-      winner,
-      quality,
-      qualityCopy,
-      title,
-      moves: moves.map((move) => ({
-        ply: move.ply,
-        san: move.san,
-        from: move.from,
-        to: move.to,
-        fen: move.fen,
-        captured: move.captured || null,
-        promotion: move.promotion || null,
-        type: move.type || 'move',
-        severity: move.severity || 1,
-        kicker: move.kicker || 'MOVE',
-        eventTitle: move.eventTitle || 'THE PIECES SHIFT',
-        narration: move.narration || '',
-      })),
-      events: matchEvents,
-    };
-  }
-
-  function recordCompletedBattle(data) {
-    const moves = getCurrentMatchData();
-    if (!moves?.length) return null;
-    const records = readRecords();
-    const latestExisting = records[0];
-    if (latestExisting?.moves?.length === moves.length && latestExisting?.moves?.at(-1)?.san === moves.at(-1)) return latestExisting;
-    const record = makeRecord(data);
-    records.unshift(record);
-    saveRecords(records);
-    return record;
-  }
-
-  function formatDate(iso) {
+  const formatDate = (iso) => {
     try {
       return new Intl.DateTimeFormat(undefined, { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(iso));
     } catch {
       return 'UNKNOWN DATE';
     }
+  };
+
+  function getSavedBattle() {
+    try { return JSON.parse(localStorage.getItem('black-crown-save') || 'null'); } catch { return null; }
+  }
+
+  function recordCompletedBattle() {
+    const save = getSavedBattle();
+    if (!save?.moves?.length) return;
+    const existing = readRecords();
+    const last = existing[0];
+    const finalMove = save.moves.at(-1);
+    if (last?.moves?.length === save.moves.length && last?.moves?.at(-1)?.from === finalMove?.from && last?.moves?.at(-1)?.to === finalMove?.to) return;
+
+    const badge = document.getElementById('resultBadge')?.textContent.trim() || '';
+    const title = document.getElementById('resultTitle')?.textContent.trim() || 'THE BATTLE';
+    const copy = document.getElementById('resultCopy')?.textContent.trim() || 'The archive preserves this battle.';
+    const events = Array.isArray(save.matchEvents) ? save.matchEvents : [];
+    const result = badge.startsWith('WHITE') ? 'win' : badge.startsWith('BLACK') ? 'loss' : 'draw';
+    const record = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      createdAt: new Date().toISOString(),
+      result,
+      reason: badge.includes('DRAW') ? badge.replace(/^DRAW\s*·\s*/i, '') : result === 'win' ? 'Victory' : result === 'loss' ? 'Defeat' : 'Draw',
+      mode: save.ai === false ? 'two-player' : 'crown',
+      difficulty: save.difficulty || localStorage.getItem('black-crown-difficulty') || 'crown',
+      title,
+      qualityCopy: copy,
+      moves: save.moves,
+      events,
+    };
+    existing.unshift(record);
+    saveRecords(existing);
+    renderLandingRecords();
   }
 
   function injectLandingSection() {
     if (screen.querySelector('#records')) return;
-    const navLinks = screen.querySelector('.landing-nav-links');
-    navLinks?.querySelector('.landing-nav-play')?.insertAdjacentHTML('beforebegin', '<a href="#records">HALL OF RECORDS</a>');
-
+    const nav = screen.querySelector('.landing-nav-links');
+    const playLink = nav?.querySelector('.landing-nav-play');
+    playLink?.insertAdjacentHTML('beforebegin', '<a href="#records">HALL OF RECORDS</a>');
     const footer = screen.querySelector('.landing-final');
     if (!footer) return;
+
     const section = document.createElement('section');
     section.className = 'landing-section records-section';
     section.id = 'records';
@@ -92,11 +73,10 @@
       <div class="landing-section-heading">
         <span class="landing-kicker">THE ARCHIVE</span>
         <h2>THE HALL OF RECORDS.</h2>
-        <p>Every completed battle leaves evidence. Your best games, closest finishes and decisive moments live here on this device.</p>
+        <p>Every finished battle leaves evidence. Your victories, defeats, draws and decisive moments remain here on this device.</p>
       </div>
       <div class="records-summary" id="recordsSummary"></div>
-      <div class="records-list" id="recordsList"></div>
-    `;
+      <div class="records-list" id="recordsList"></div>`;
     footer.parentNode.insertBefore(section, footer);
     renderLandingRecords();
   }
@@ -136,7 +116,7 @@
           <span class="record-kicker">${record.mode === 'crown' ? `PLAY WITH CROWN · ${String(record.difficulty).toUpperCase()}` : 'TWO PLAYER · LOCAL'}</span>
           <h3>${record.title || 'THE BATTLE'}</h3>
           <p>${record.qualityCopy || 'The archive preserves this battle.'}</p>
-          <div class="record-meta"><span>${formatDate(record.createdAt)}</span><span>${record.moves?.length || 0} PLY</span><span>${record.reason ? record.reason.toUpperCase() : (record.result || 'COMPLETE').toUpperCase()}</span></div>
+          <div class="record-meta"><span>${formatDate(record.createdAt)}</span><span>${record.moves?.length || 0} PLY</span><span>${record.reason.toUpperCase()}</span></div>
         </div>
         <button class="action-button record-open" type="button" data-record-id="${record.id}">VIEW RECORD <span>↗</span></button>`;
       list.appendChild(article);
@@ -145,7 +125,7 @@
     list.querySelectorAll('.record-open').forEach((button) => button.addEventListener('click', () => openRecord(button.dataset.recordId)));
   }
 
-  function buildRecordModal() {
+  function buildViewer() {
     if (document.getElementById('recordViewer')) return;
     const shell = document.createElement('div');
     shell.className = 'modal-shell record-viewer-shell';
@@ -165,24 +145,23 @@
   function openRecord(id) {
     const record = readRecords().find((item) => item.id === id);
     if (!record) return;
-    buildRecordModal();
-    const shell = document.getElementById('recordViewer');
-    const summary = document.getElementById('recordDetailSummary');
-    const movesHost = document.getElementById('recordDetailMoves');
-    const eventsHost = document.getElementById('recordDetailEvents');
-    summary.innerHTML = `
+    buildViewer();
+    document.getElementById('recordDetailSummary').innerHTML = `
       <div><span>RESULT</span><strong>${record.result.toUpperCase()}</strong></div>
       <div><span>MODE</span><strong>${record.mode === 'crown' ? `CROWN · ${String(record.difficulty).toUpperCase()}` : 'TWO PLAYER'}</strong></div>
       <div><span>LENGTH</span><strong>${record.moves?.length || 0} PLY</strong></div>
       <div><span>DATE</span><strong>${formatDate(record.createdAt)}</strong></div>`;
+    const movesHost = document.getElementById('recordDetailMoves');
     movesHost.replaceChildren();
-    const moves = record.moves || [];
-    for (let i = 0; i < moves.length; i += 2) {
-      const row = document.createElement('div');
-      row.className = 'record-move-row';
-      row.innerHTML = `<span>${String(Math.floor(i / 2) + 1).padStart(2, '0')}</span><b>${moves[i]?.san || ''}</b><b>${moves[i + 1]?.san || ''}</b>`;
-      movesHost.appendChild(row);
+    for (let i = 0; i < (record.moves?.length || 0); i += 2) {
+      const white = record.moves[i];
+      const black = record.moves[i + 1];
+      const move = document.createElement('div');
+      move.className = 'record-move-row';
+      move.innerHTML = `<span>${String(Math.floor(i / 2) + 1).padStart(2, '0')}</span><b>${white?.san || `${white?.from || ''}-${white?.to || ''}`}</b><b>${black?.san || `${black?.from || ''}-${black?.to || ''}`}</b>`;
+      movesHost.appendChild(move);
     }
+    const eventsHost = document.getElementById('recordDetailEvents');
     eventsHost.replaceChildren();
     (record.events || []).filter((event) => event.severity >= 3).forEach((event) => {
       const item = document.createElement('article');
@@ -191,42 +170,23 @@
       eventsHost.appendChild(item);
     });
     if (!(record.events || []).some((event) => event.severity >= 3)) eventsHost.innerHTML = '<p class="records-empty-copy">No major Crown events were recorded.</p>';
-    shell.hidden = false;
-    state.selectedId = id;
+    document.getElementById('recordViewer').hidden = false;
   }
 
   function watchResult() {
-    if (!resultOverlay) return;
-    const observer = new MutationObserver(() => {
-      if (!resultOverlay.hidden && !resultOverlay.dataset.recorded) {
-        resultOverlay.dataset.recorded = '1';
-        const title = document.getElementById('resultTitle')?.textContent.trim() || 'THE BATTLE';
-        const badge = document.getElementById('resultBadge')?.textContent.trim() || '';
-        const copy = document.getElementById('resultCopy')?.textContent.trim() || '';
-        const result = badge.startsWith('WHITE') ? 'win' : badge.startsWith('BLACK') ? 'loss' : 'draw';
-        let events = [];
-        try { events = JSON.parse(localStorage.getItem('black-crown-current-events') || '[]'); } catch {}
-        recordCompletedBattle({
-          result,
-          reason: badge.includes('DRAW') ? badge.replace(/^DRAW\s*·\s*/i, '') : 'Finished',
-          mode: localStorage.getItem('black-crown-match-mode') || 'crown',
-          difficulty: localStorage.getItem('black-crown-difficulty') || 'crown',
-          winner: result === 'win' ? 'WHITE' : result === 'loss' ? 'BLACK' : null,
-          quality: title,
-          qualityCopy: copy,
-          title,
-          matchEvents: events,
-          moves: []
-        });
-        renderLandingRecords();
-      }
-    });
-    observer.observe(resultOverlay, { attributes: true, attributeFilter: ['hidden'] });
+    let lastHidden = resultOverlay.hidden;
+    const check = () => {
+      const current = resultOverlay.hidden;
+      if (lastHidden && !current) recordCompletedBattle();
+      lastHidden = current;
+      window.requestAnimationFrame(check);
+    };
+    check();
   }
 
   injectLandingSection();
-  buildRecordModal();
+  buildViewer();
   watchResult();
   window.addEventListener('storage', renderLandingRecords);
-  window.blackCrownRecords = { readRecords, saveRecords, recordCompletedBattle, renderLandingRecords, openRecord };
+  window.blackCrownRecords = { readRecords, saveRecords, renderLandingRecords, openRecord };
 })();
