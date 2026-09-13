@@ -28,12 +28,12 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   let matchMode = save?.ai === false ? 'two-player' : 'crown';
   let modeSetupOpen = false;
   let matchStarted = false;
+  let launching = false;
+  let launchTimer = 0;
   let aiTimer = 0;
   let busy = false;
   let lastMoveSignature = '';
 
-  // The main engine can restore a saved AI game before this controller loads.
-  // Keep AI inert until the player explicitly selects a match type.
   aiToggle.checked = false;
   aiToggle.hidden = true;
   aiToggle.disabled = true;
@@ -122,18 +122,12 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   }
 
   function extractSans() {
-    return [...moveList.querySelectorAll('.move-san')]
-      .map((node) => node.textContent.trim())
-      .filter(Boolean);
+    return [...moveList.querySelectorAll('.move-san')].map((node) => node.textContent.trim()).filter(Boolean);
   }
 
   function rebuildGame() {
-    try {
-      return replayFromSan(extractSans(), Chess);
-    } catch (error) {
-      console.warn('Crown difficulty could not reconstruct the current game.', error);
-      return null;
-    }
+    try { return replayFromSan(extractSans(), Chess); }
+    catch (error) { console.warn('Crown difficulty could not reconstruct the current game.', error); return null; }
   }
 
   function cancelTimer() {
@@ -150,9 +144,7 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
       option.setAttribute('aria-checked', String(active));
     });
     difficultySetup.hidden = matchMode !== 'crown';
-    modeSummary.textContent = matchMode === 'crown'
-      ? `PLAY WITH CROWN · ${levels[difficulty].label}`
-      : 'TWO PLAYER · LOCAL BATTLE';
+    modeSummary.textContent = matchMode === 'crown' ? `PLAY WITH CROWN · ${levels[difficulty].label}` : 'TWO PLAYER · LOCAL BATTLE';
   }
 
   function selectDifficulty(nextDifficulty) {
@@ -180,21 +172,36 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
 
   function updateGameModeLabel() {
     if (!connectionLabel) return;
-    connectionLabel.textContent = matchMode === 'crown'
-      ? `CROWN · ${levels[difficulty].label}`
-      : 'TWO PLAYER · LOCAL';
+    connectionLabel.textContent = matchMode === 'crown' ? `CROWN · ${levels[difficulty].label}` : 'TWO PLAYER · LOCAL';
   }
 
   function openModeSetup(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (matchStarted && !gameScreen.hidden) return;
-    modeSetupOpen = true;
-    modeShell.hidden = false;
-    selectMode(matchMode);
+    if (matchStarted && !gameScreen.hidden || launching) return;
+
+    launching = true;
+    modeSetupOpen = false;
+    modeShell.hidden = true;
+    window.blackCrownLaunch?.open?.();
+
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    const launchDelay = reduced ? 350 : 1450;
+    launchTimer = window.setTimeout(() => {
+      launchTimer = 0;
+      launching = false;
+      window.blackCrownLaunch?.close?.();
+      modeSetupOpen = true;
+      modeShell.hidden = false;
+      selectMode(matchMode);
+    }, launchDelay);
   }
 
   function closeModeSetup() {
+    if (launchTimer) window.clearTimeout(launchTimer);
+    launchTimer = 0;
+    launching = false;
+    window.blackCrownLaunch?.close?.();
     modeSetupOpen = false;
     modeShell.hidden = true;
   }
@@ -203,7 +210,6 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
     aiToggle.disabled = false;
     aiToggle.checked = matchMode === 'crown';
     aiToggle.disabled = true;
-    // The capture-phase handler below owns AI state, so app.js never starts its native timer here.
     aiToggle.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
@@ -228,10 +234,8 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   function scheduleAi(delay = 760) {
     cancelTimer();
     if (matchMode !== 'crown' || gameScreen.hidden) return;
-
     const chess = rebuildGame();
     if (!chess || chess.turn() !== 'b' || chess.isGameOver()) return;
-
     busy = true;
     syncBlackStatus();
     const sessionSignature = extractSans().join('|');
@@ -240,18 +244,12 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
       aiTimer = 0;
       const currentGame = rebuildGame();
       if (matchMode !== 'crown' || gameScreen.hidden || !currentGame || currentGame.turn() !== 'b' || currentGame.isGameOver()) {
-        busy = false;
-        syncBlackStatus();
-        return;
+        busy = false; syncBlackStatus(); return;
       }
-
       const move = chooseCrownMove(currentGame, difficulty);
       if (!move || sessionSignature !== extractSans().join('|')) {
-        busy = false;
-        syncBlackStatus();
-        return;
+        busy = false; syncBlackStatus(); return;
       }
-
       await playAiMove(move);
       busy = false;
       lastMoveSignature = extractSans().join('|');
@@ -261,11 +259,9 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
 
   function syncBlackStatus() {
     if (!blackStatus) return;
-    if (matchMode === 'crown') {
-      blackStatus.textContent = busy ? 'CALCULATING' : `CROWN AI · ${levels[difficulty].label}`;
-    } else {
-      blackStatus.textContent = 'SECOND PLAYER';
-    }
+    blackStatus.textContent = matchMode === 'crown'
+      ? (busy ? 'CALCULATING' : `CROWN AI · ${levels[difficulty].label}`)
+      : 'SECOND PLAYER';
   }
 
   function waitForPromotionChoice(label, timeout = 900) {
@@ -285,26 +281,21 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   async function playAiMove(move) {
     const source = board.querySelector(`.square[data-square="${move.from}"]`);
     if (!source) return false;
-
     aiToggle.disabled = false;
     aiToggle.checked = false;
     source.click();
-
     const target = board.querySelector(`.square[data-square="${move.to}"]`);
     if (!target) {
       aiToggle.checked = true;
       aiToggle.disabled = true;
       return false;
     }
-
     target.click();
-
     if (move.promotion) {
       const label = move.promotion === 'q' ? 'QUEEN' : move.promotion === 'r' ? 'ROOK' : move.promotion === 'b' ? 'BISHOP' : 'KNIGHT';
       const choice = await waitForPromotionChoice(label);
       choice?.click();
     }
-
     aiToggle.checked = true;
     aiToggle.disabled = true;
     return true;
@@ -318,22 +309,12 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   entranceButton.addEventListener('click', openModeSetup, true);
   closeModeBtn.addEventListener('click', closeModeSetup);
   startMatchBtn.addEventListener('click', startMatch);
-
-  modeOptions.forEach((option) => {
-    option.addEventListener('click', () => selectMode(option.dataset.mode));
-  });
-
-  difficultyGrid.querySelectorAll('.difficulty-level').forEach((button) => {
-    button.addEventListener('click', () => selectDifficulty(button.dataset.difficulty));
-  });
-
+  modeOptions.forEach((option) => option.addEventListener('click', () => selectMode(option.dataset.mode)));
+  difficultyGrid.querySelectorAll('.difficulty-level').forEach((button) => button.addEventListener('click', () => selectDifficulty(button.dataset.difficulty)));
   aiToggle.addEventListener('change', handleToggle, true);
 
   const observer = new MutationObserver(() => {
-    if (!matchStarted || gameScreen.hidden || matchMode !== 'crown') {
-      syncBlackStatus();
-      return;
-    }
+    if (!matchStarted || gameScreen.hidden || matchMode !== 'crown') { syncBlackStatus(); return; }
     const signature = extractSans().join('|');
     if (signature === lastMoveSignature) return;
     lastMoveSignature = signature;
@@ -342,12 +323,9 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   });
   observer.observe(moveList, { childList: true, subtree: true });
 
-  modeShell.addEventListener('click', (event) => {
-    if (event.target === modeShell) closeModeSetup();
-  });
-
+  modeShell.addEventListener('click', (event) => { if (event.target === modeShell) closeModeSetup(); });
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && modeSetupOpen) closeModeSetup();
+    if (event.key === 'Escape' && (modeSetupOpen || launching)) closeModeSetup();
   });
 
   selectMode(matchMode);
