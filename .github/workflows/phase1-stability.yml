@@ -138,8 +138,80 @@ jobs:
               path.write_text(text, encoding="utf-8")
           PY
 
+      - name: Patch explicit draw handling once
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("app.js")
+          text = path.read_text(encoding="utf-8")
+          marker = "/* phase1-draw-v1 */"
+
+          if marker not in text:
+              helper = '''function isDrawState() {
+                return Boolean(
+                  (typeof game.isDraw === 'function' && game.isDraw()) ||
+                  (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) ||
+                  (typeof game.isStalemate === 'function' && game.isStalemate()) ||
+                  (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) ||
+                  (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves())
+                );
+              }
+
+              function isGameOverState() {
+                return game.isCheckmate() || isDrawState();
+              }
+
+              function getDrawReason() {
+                if (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) return 'Insufficient material';
+                if (typeof game.isStalemate === 'function' && game.isStalemate()) return 'Stalemate';
+                if (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) return 'Threefold repetition';
+                if (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves()) return 'Fifty-move rule';
+                return 'Draw';
+              }
+
+              '''
+              text = text.replace("function updatePanels() {", helper + "function updatePanels() {", 1)
+              text = text.replace("const gameOver = game.isGameOver();", "const gameOver = isGameOverState();", 1)
+              text = text.replace("game.isGameOver()", "isGameOverState()")
+              text = text.replace(": game.isDraw() ? 'DRAW'", ": isDrawState() ? 'DRAW'")
+              text = text.replace("const draw = game.isDraw();", "const draw = isDrawState();\n  const drawReason = draw ? getDrawReason() : null;", 1)
+              text = text.replace("resultBadge.textContent = checkmate ? `${winner} CLAIMS THE CROWN` : draw ? 'DRAWN BATTLE' : 'GAME COMPLETE';", "resultBadge.textContent = checkmate ? `${winner} CLAIMS THE CROWN` : draw ? `DRAW · ${drawReason.toUpperCase()}` : 'GAME COMPLETE';", 1)
+              text = text.replace("resultTitle.textContent = quality.title;", "resultTitle.textContent = draw ? 'THE BATTLE FALLS SILENT' : quality.title;", 1)
+              text = text.replace("resultCopy.textContent = quality.copy;", "resultCopy.textContent = draw ? `The game ends in ${drawReason.toLowerCase()}. The archive preserves the final position.` : quality.copy;", 1)
+              text += "\n" + marker + "\n"
+              path.write_text(text, encoding="utf-8")
+          PY
+
       - name: Syntax check
         run: node --check app.js
+
+      - name: Chess draw rules smoke test
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save chess.js@1.4.0 >/dev/null 2>&1
+          node <<'NODE'
+          const { Chess } = require('chess.js');
+
+          const cases = [
+            ['King vs King', '8/8/8/8/8/8/4k3/4K3 w - - 0 1'],
+            ['King + Bishop vs King', '4k3/8/8/8/8/8/4K3/5B2 w - - 0 1'],
+            ['King + Knight vs King', '4k3/8/8/8/8/8/4K3/5N2 w - - 0 1'],
+          ];
+
+          for (const [label, fen] of cases) {
+            const chess = new Chess(fen);
+            if (!chess.isInsufficientMaterial() || !chess.isGameOver() || !chess.isDraw()) {
+              throw new Error(`${label} was not detected as a draw`);
+            }
+            console.log(`PASS: ${label}`);
+          }
+
+          const threefold = new Chess();
+          for (const san of ['Nf3', 'Nf6', 'Ng1', 'Ng8', 'Nf3', 'Nf6', 'Ng1', 'Ng8']) threefold.move(san);
+          if (!threefold.isThreefoldRepetition() || !threefold.isGameOver()) throw new Error('Threefold repetition was not detected');
+          console.log('PASS: Threefold repetition');
+          NODE
 
       - name: Commit stability patch when needed
         run: |
@@ -150,5 +222,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add app.js
-          git commit -m "fix: harden Phase 1 game state and AI timing"
+          git commit -m "fix: make draw outcomes explicit"
           git push
