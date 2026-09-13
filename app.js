@@ -173,7 +173,7 @@ function renderBoard() {
       node.draggable = true;
       node.dataset.square = squareName;
       node.addEventListener('dragstart', (event) => {
-        if (aiThinking || game.isGameOver() || pendingPromotion || (aiToggle.checked && game.turn() === 'b')) {
+        if (aiThinking || isGameOverState() || pendingPromotion || (aiToggle.checked && game.turn() === 'b')) {
           event.preventDefault();
           return;
         }
@@ -211,13 +211,35 @@ function renderBoard() {
   updatePanels();
 }
 
-function updatePanels() {
+function isDrawState() {
+      return Boolean(
+        (typeof game.isDraw === 'function' && game.isDraw()) ||
+        (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) ||
+        (typeof game.isStalemate === 'function' && game.isStalemate()) ||
+        (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) ||
+        (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves())
+      );
+    }
+
+    function isGameOverState() {
+      return game.isCheckmate() || isDrawState();
+    }
+
+    function getDrawReason() {
+      if (typeof game.isInsufficientMaterial === 'function' && game.isInsufficientMaterial()) return 'Insufficient material';
+      if (typeof game.isStalemate === 'function' && game.isStalemate()) return 'Stalemate';
+      if (typeof game.isThreefoldRepetition === 'function' && game.isThreefoldRepetition()) return 'Threefold repetition';
+      if (typeof game.isDrawByFiftyMoves === 'function' && game.isDrawByFiftyMoves()) return 'Fifty-move rule';
+      return 'Draw';
+    }
+
+    function updatePanels() {
   const history = game.history({ verbose: true });
   const turn = game.turn();
   const fen = game.fen().split(' ');
-  const gameOver = game.isGameOver();
+  const gameOver = isGameOverState();
 
-  gameStatus.textContent = game.isCheckmate() ? 'CHECKMATE' : game.isDraw() ? 'DRAW' : turn === 'w' ? 'WHITE TO MOVE' : 'BLACK TO MOVE';
+  gameStatus.textContent = game.isCheckmate() ? 'CHECKMATE' : isDrawState() ? 'DRAW' : turn === 'w' ? 'WHITE TO MOVE' : 'BLACK TO MOVE';
   moveCounter.textContent = `MOVE ${String(Math.floor(history.length / 2) + 1).padStart(2, '0')}`;
   moveTotal.textContent = `${history.length} PLY`;
   halfClock.textContent = fen[4] || '0';
@@ -256,7 +278,7 @@ function updatePanels() {
 }
 
 function handleSquare(squareName) {
-  if (aiThinking || game.isGameOver() || pendingPromotion) return;
+  if (aiThinking || isGameOverState() || pendingPromotion) return;
   if (aiToggle.checked && game.turn() === 'b') return;
 
   const piece = game.get(squareName);
@@ -281,7 +303,7 @@ function handleSquare(squareName) {
 }
 
 function attemptMove(from, to) {
-  if (!from || aiThinking || game.isGameOver() || pendingPromotion) return;
+  if (!from || aiThinking || isGameOverState() || pendingPromotion) return;
   const legalMove = game.moves({ square: from, verbose: true }).find((move) => move.to === to);
   if (!legalMove) {
     const targetPiece = game.get(to);
@@ -347,14 +369,14 @@ function clearAiTimer() {
 
     function scheduleAiMove(delay = 760) {
       clearAiTimer();
-      if (!aiToggle.checked || game.isGameOver() || game.turn() !== 'b') return;
+      if (!aiToggle.checked || isGameOverState() || game.turn() !== 'b') return;
 
       const session = gameSessionId;
       aiThinking = true;
       updatePanels();
       aiTimerId = window.setTimeout(() => {
         aiTimerId = null;
-        if (session !== gameSessionId || !aiToggle.checked || game.isGameOver() || game.turn() !== 'b') {
+        if (session !== gameSessionId || !aiToggle.checked || isGameOverState() || game.turn() !== 'b') {
           aiThinking = false;
           renderBoard();
           return;
@@ -497,7 +519,7 @@ function moveNarration(move) {
 }
 
 function playMove(from, to, promotion = 'q', fromAi = false) {
-      if ((!fromAi && aiThinking) || game.isGameOver()) return;
+      if ((!fromAi && aiThinking) || isGameOverState()) return;
       try {
         const move = game.move({ from, to, promotion });
         if (!move) return;
@@ -523,7 +545,7 @@ function playMove(from, to, promotion = 'q', fromAi = false) {
           renderBoard();
         }, 460);
 
-        if (game.isGameOver()) {
+        if (isGameOverState()) {
           clearAiTimer();
           window.setTimeout(showResult, 650);
           return;
@@ -540,7 +562,7 @@ function playMove(from, to, promotion = 'q', fromAi = false) {
     }
 
     function makeAiMove() {
-  if (game.isGameOver() || game.turn() !== 'b') return;
+  if (isGameOverState() || game.turn() !== 'b') return;
   const moves = game.moves({ verbose: true });
   if (!moves.length) return;
 
@@ -612,14 +634,15 @@ function flipBoard() {
 
 function showResult() {
   const checkmate = game.isCheckmate();
-  const draw = game.isDraw();
+  const draw = isDrawState();
+  const drawReason = draw ? getDrawReason() : null;
   const winner = checkmate ? (game.turn() === 'w' ? 'BLACK' : 'WHITE') : null;
   const quality = getGameQuality();
 
   resultCrown.textContent = winner === 'WHITE' ? '♔' : winner === 'BLACK' ? '♚' : '♛';
-  resultBadge.textContent = checkmate ? `${winner} CLAIMS THE CROWN` : draw ? 'DRAWN BATTLE' : 'GAME COMPLETE';
-  resultTitle.textContent = quality.title;
-  resultCopy.textContent = quality.copy;
+  resultBadge.textContent = checkmate ? `${winner} CLAIMS THE CROWN` : draw ? `DRAW · ${drawReason.toUpperCase()}` : 'GAME COMPLETE';
+  resultTitle.textContent = draw ? 'THE BATTLE FALLS SILENT' : quality.title;
+  resultCopy.textContent = draw ? `The game ends in ${drawReason.toLowerCase()}. The archive preserves the final position.` : quality.copy;
   resultNewGame.hidden = false;
   resultOverlay.hidden = false;
   persistGame();
@@ -780,7 +803,7 @@ aiToggle.addEventListener('change', () => {
       selectedSquare = null;
       if (!aiToggle.checked) {
         clearAiTimer();
-      } else if (game.turn() === 'b' && !game.isGameOver()) {
+      } else if (game.turn() === 'b' && !isGameOverState()) {
         scheduleAiMove(420);
       }
       persistGame();
@@ -805,7 +828,9 @@ window.addEventListener('keydown', (event) => {
 buildDust();
 restoreSavedGame();
 renderBoard();
-if (aiToggle.checked && game.turn() === 'b' && !game.isGameOver()) scheduleAiMove(420);
+if (aiToggle.checked && game.turn() === 'b' && !isGameOverState()) scheduleAiMove(420);
 updateDocumentTitle();
 
 /* phase1-stability-v1 */
+
+/* phase1-draw-v1 */
