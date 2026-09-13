@@ -1,0 +1,26 @@
+/* THE BLACK CROWN · black-piece visibility */
+
+/* Keep black pieces visibly black while giving them an ivory edge against dark squares. */
+.square .piece.black {
+  color: #090909;
+  -webkit-text-stroke: 1.05px rgba(245, 242, 234, .72);
+  text-shadow:
+    0 0 2px rgba(255,255,255,.95),
+    0 0 5px rgba(255,255,255,.42),
+    0 4px 9px rgba(0,0,0,.88);
+  filter: drop-shadow(0 0 2px rgba(255,255,255,.35));
+}
+
+/* Stronger edge on hover/selection without turning the piece white. */
+.square.selected .piece.black,
+.square:hover .piece.black {
+  -webkit-text-stroke-color: rgba(255,255,255,.9);
+  text-shadow:
+    0 0 2px rgba(255,255,255,1),
+    0 0 7px rgba(255,255,255,.5),
+    0 4px 9px rgba(0,0,0,.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .square .piece.black { filter: none; }
+}
