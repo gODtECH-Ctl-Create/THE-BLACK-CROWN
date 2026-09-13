@@ -22,8 +22,27 @@
 .settings-range { width:150px; accent-color:#d6d6d6; }
 .settings-select { min-width:150px; padding:9px 11px; border:1px solid var(--line-strong); background:#0c0c0e; color:var(--text); }
 .settings-danger { border-color:rgba(160,50,50,.42); }
-.settings-danger button { width:100%; }
+.settings-danger button { width:auto; min-width:150px; }
 .settings-footer { margin-top:18px; display:flex; align-items:center; justify-content:space-between; gap:14px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
-.settings-game-button { position:relative; }
+.settings-game-button { position:relative; border:1px solid var(--line-strong); background:rgba(255,255,255,.025); color:var(--text); min-height:40px; padding:0 13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+.settings-game-button:hover { background:rgba(255,255,255,.07); }
 .settings-game-button .settings-gear { font-size:15px; }
-@media (max-width:780px) { .settings-grid { grid-template-columns:1fr; } .settings-page { width:min(92vw,680px); } .settings-footer { flex-direction:column; align-items:flex-start; } }
+
+:root[data-coordinates="off"] .coordinates { visibility:hidden; }
+
+:root[data-events="reduced"] .event-caption { transform:scale(.88); opacity:.82; }
+:root[data-events="minimal"] .event-caption { display:none; }
+:root[data-events="minimal"] .event-fx .event-crest { opacity:.45; transform:scale(.7); }
+:root[data-events="reduced"] .event-fx .event-crest { opacity:.72; transform:scale(.86); }
+
+:root[data-motion="reduced"] *,
+:root[data-motion="reduced"] *::before,
+:root[data-motion="reduced"] *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.001ms !important; }
+@media (prefers-reduced-motion: reduce) {
+  :root[data-motion="system"] *,
+  :root[data-motion="system"] *::before,
+  :root[data-motion="system"] *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.001ms !important; }
+}
+
+body.settings-open { overflow:hidden; }
+@media (max-width:780px) { .settings-grid { grid-template-columns:1fr; } .settings-page { width:min(92vw,680px); } .settings-footer { flex-direction:column; align-items:flex-start; } .settings-row { align-items:flex-start; } .settings-range { width:125px; } .settings-select { min-width:125px; max-width:150px; } }
