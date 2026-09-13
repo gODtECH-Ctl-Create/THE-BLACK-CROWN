@@ -1,0 +1,28 @@
+/* THE BLACK CROWN · silver white pieces */
+
+/* White pieces read as polished silver instead of flat white. */
+.square .piece.white {
+  color: #d4d6d8;
+  -webkit-text-stroke: .55px rgba(255,255,255,.78);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,.85),
+    0 -1px 0 rgba(255,255,255,.35),
+    0 0 4px rgba(225,229,233,.35),
+    0 5px 10px rgba(0,0,0,.72);
+  filter: drop-shadow(0 0 2px rgba(220,224,228,.25));
+}
+
+.square.selected .piece.white,
+.square:hover .piece.white {
+  color: #e5e7e9;
+  -webkit-text-stroke-color: rgba(255,255,255,.94);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,1),
+    0 -1px 0 rgba(255,255,255,.42),
+    0 0 7px rgba(230,234,238,.48),
+    0 5px 10px rgba(0,0,0,.82);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .square .piece.white { filter: none; }
+}
