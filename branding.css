@@ -1,0 +1,40 @@
+/* The maker mark is a signature, never the headline. */
+.entrance-screen .eyebrow,
+.entrance-screen .entrance-meta span:nth-child(2),
+.entrance-screen .engraving,
+.game-screen .brand-lockup small,
+.game-screen .board-seal span:first-child,
+.game-screen .board-engraving,
+.game-screen .side-inscription,
+.game-screen .footer-bar span:first-child,
+.story-footer span {
+  color: rgba(194, 172, 126, .085) !important;
+  opacity: .62;
+}
+
+.entrance-screen .eyebrow {
+  font-size: 7px;
+  letter-spacing: .28em;
+}
+
+.game-screen .brand-lockup small {
+  font-size: 7px;
+  letter-spacing: .24em;
+}
+
+.game-screen .board-seal span:first-child,
+.game-screen .board-engraving,
+.game-screen .side-inscription,
+.story-footer span {
+  font-size: 7px;
+  letter-spacing: .2em;
+}
+
+.game-screen .board-seal {
+  color: rgba(194, 172, 126, .13);
+}
+
+body::before {
+  color: rgba(255, 255, 255, .009) !important;
+  font-size: clamp(100px, 20vw, 360px);
+}
