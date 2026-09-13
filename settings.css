@@ -1,0 +1,29 @@
+/* THE BLACK CROWN · Settings */
+.settings-shell { position:fixed; inset:0; z-index:1200; background:rgba(3,3,4,.96); backdrop-filter:blur(18px); overflow:auto; }
+.settings-shell[hidden] { display:none; }
+.settings-page { width:min(1080px,94vw); margin:0 auto; padding:28px 0 48px; }
+.settings-head { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; padding:10px 0 26px; border-bottom:1px solid var(--line); }
+.settings-head h2 { margin:8px 0 0; font-family:var(--display-font); letter-spacing:.03em; font-size:clamp(28px,4vw,54px); }
+.settings-close { min-width:46px; min-height:46px; border:1px solid var(--line-strong); background:rgba(255,255,255,.03); color:var(--text); font-size:28px; cursor:pointer; }
+.settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px; }
+.settings-card { border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(0,0,0,.14)); padding:20px; }
+.settings-card h3 { margin:0 0 4px; font-family:var(--display-font); font-size:18px; }
+.settings-card > p { margin:0 0 18px; color:var(--muted); font-size:13px; line-height:1.55; }
+.settings-row { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:14px 0; border-top:1px solid var(--line); }
+.settings-row:first-of-type { border-top:0; }
+.settings-row-copy strong { display:block; font-size:14px; }
+.settings-row-copy span { display:block; margin-top:4px; color:var(--muted); font-size:12px; }
+.settings-control { flex:0 0 auto; }
+.settings-switch { position:relative; width:54px; height:30px; }
+.settings-switch input { position:absolute; opacity:0; width:0; height:0; }
+.settings-switch-ui { display:block; width:54px; height:30px; border:1px solid var(--line-strong); background:#101012; border-radius:999px; cursor:pointer; }
+.settings-switch-ui::after { content:""; display:block; width:22px; height:22px; margin:3px; background:#777; border-radius:50%; transition:transform .2s ease, background .2s ease; }
+.settings-switch input:checked + .settings-switch-ui::after { transform:translateX(24px); background:#e5e5e5; }
+.settings-range { width:150px; accent-color:#d6d6d6; }
+.settings-select { min-width:150px; padding:9px 11px; border:1px solid var(--line-strong); background:#0c0c0e; color:var(--text); }
+.settings-danger { border-color:rgba(160,50,50,.42); }
+.settings-danger button { width:100%; }
+.settings-footer { margin-top:18px; display:flex; align-items:center; justify-content:space-between; gap:14px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.12em; }
+.settings-game-button { position:relative; }
+.settings-game-button .settings-gear { font-size:15px; }
+@media (max-width:780px) { .settings-grid { grid-template-columns:1fr; } .settings-page { width:min(92vw,680px); } .settings-footer { flex-direction:column; align-items:flex-start; } }
