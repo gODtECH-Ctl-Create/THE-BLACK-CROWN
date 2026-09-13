@@ -13,6 +13,7 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
   const entranceScreen = document.getElementById('entranceScreen');
   const gameScreen = document.getElementById('gameScreen');
   const connectionLabel = document.getElementById('connectionLabel');
+  const newGameButton = document.getElementById('newGameBtn');
 
   if (!aiToggle || !board || !moveList || !entranceButton || !entranceScreen || !gameScreen) return;
 
@@ -208,6 +209,7 @@ import { chooseCrownMove, getDifficultyLevels, replayFromSan } from './crown-dif
 
   function startMatch() {
     cancelTimer();
+    if (matchStarted && gameScreen.hidden) newGameButton?.click();
     persistSetup();
     closeModeSetup();
     matchStarted = true;
