@@ -1,6 +1,7 @@
 /* THE BLACK CROWN · Obvious game soundscape */
 (() => {
   const SOUND_KEY = 'black-crown-sound-enabled';
+  const VOLUME_KEY = 'black-crown-sound-volume';
   let context = null;
   let master = null;
   let muted = localStorage.getItem(SOUND_KEY) === 'off';
@@ -9,6 +10,11 @@
 
   const $ = (selector) => document.querySelector(selector);
 
+  function getVolume() {
+    const stored = Number(localStorage.getItem(VOLUME_KEY));
+    return Number.isFinite(stored) ? Math.max(0, Math.min(100, stored)) / 100 : 0.5;
+  }
+
   function ensureAudio() {
     if (muted) return null;
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -16,8 +22,10 @@
     if (!context) {
       context = new AudioContextClass();
       master = context.createGain();
-      master.gain.value = 0.5;
+      master.gain.value = getVolume();
       master.connect(context.destination);
+    } else if (master) {
+      master.gain.value = getVolume();
     }
     if (context.state === 'suspended') context.resume();
     return context;
@@ -62,9 +70,7 @@
   function play(kind) {
     if (muted) return;
     switch (kind) {
-      case 'ui':
-        tone({ frequency: 520, duration: 0.055, type: 'square', gain: 0.05, endFrequency: 630 });
-        break;
+      case 'ui': tone({ frequency: 520, duration: 0.055, type: 'square', gain: 0.05, endFrequency: 630 }); break;
       case 'move':
         tone({ frequency: 165, duration: 0.09, type: 'triangle', gain: 0.16, endFrequency: 98 });
         tone({ frequency: 690, duration: 0.045, type: 'sine', gain: 0.045, when: 0.01, endFrequency: 510 });
@@ -103,8 +109,7 @@
         tone({ frequency: 360, duration: 0.075, type: 'square', gain: 0.06, endFrequency: 260 });
         tone({ frequency: 215, duration: 0.1, type: 'triangle', gain: 0.065, when: 0.08, endFrequency: 145 });
         break;
-      default:
-        break;
+      default: break;
     }
   }
 
@@ -170,6 +175,19 @@
       }
     }, { passive: true });
   }
+
+  window.addEventListener('black-crown-settings-changed', (event) => {
+    muted = event.detail?.sound !== 'on';
+    if (master) master.gain.value = getVolume();
+    if (!muted) ensureAudio();
+    const button = $('#soundControl');
+    if (button) {
+      button.setAttribute('aria-pressed', String(!muted));
+      button.title = muted ? 'Turn sound on' : 'Mute game sounds';
+      button.querySelector('.sound-icon').textContent = muted ? '◌' : '◉';
+      button.querySelector('.sound-copy').textContent = muted ? 'SOUND OFF' : 'SOUND ON';
+    }
+  });
 
   function boot() {
     installInteractions();
