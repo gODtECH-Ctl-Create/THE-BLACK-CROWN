@@ -1,0 +1,56 @@
+/* THE BLACK CROWN · Crown difficulty controls */
+
+.difficulty-control {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.difficulty-control label {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.difficulty-control select {
+  width: 100%;
+  appearance: none;
+  border: 1px solid var(--line-strong);
+  border-radius: 0;
+  padding: 11px 34px 11px 12px;
+  color: var(--paper);
+  background:
+    linear-gradient(45deg, transparent 50%, var(--gold) 50%) calc(100% - 16px) 50% / 5px 5px no-repeat,
+    linear-gradient(135deg, var(--gold) 50%, transparent 50%) calc(100% - 12px) 50% / 5px 5px no-repeat,
+    rgba(255,255,255,.025);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .11em;
+  cursor: pointer;
+}
+
+.difficulty-control select:hover,
+.difficulty-control select:focus {
+  border-color: rgba(194,172,126,.65);
+  outline: none;
+}
+
+.difficulty-control select:disabled {
+  opacity: .32;
+  cursor: not-allowed;
+}
+
+.difficulty-hint {
+  color: rgba(194,172,126,.42);
+  font-size: 8px;
+  line-height: 1.4;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 660px) {
+  .difficulty-control select { min-height: 42px; }
+}
