@@ -1,0 +1,154 @@
+name: Phase 1 Game Stability
+
+on:
+  push:
+    branches:
+      - "**"
+
+permissions:
+  contents: write
+
+jobs:
+  stability:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch Phase 1 state handling once
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("app.js")
+          text = path.read_text(encoding="utf-8")
+          marker = "/* phase1-stability-v1 */"
+
+          if marker not in text:
+              text = text.replace(
+                  "let savedGameId = 0;",
+                  "let savedGameId = 0;\nlet aiTimerId = null;\nlet gameSessionId = 0;"
+              )
+
+              anchor = "function updateDocumentTitle() {"
+              helpers = '''function clearAiTimer() {
+                if (aiTimerId !== null) {
+                  window.clearTimeout(aiTimerId);
+                  aiTimerId = null;
+                }
+                aiThinking = false;
+              }
+
+              function scheduleAiMove(delay = 760) {
+                clearAiTimer();
+                if (!aiToggle.checked || game.isGameOver() || game.turn() !== 'b') return;
+
+                const session = gameSessionId;
+                aiThinking = true;
+                updatePanels();
+                aiTimerId = window.setTimeout(() => {
+                  aiTimerId = null;
+                  if (session !== gameSessionId || !aiToggle.checked || game.isGameOver() || game.turn() !== 'b') {
+                    aiThinking = false;
+                    renderBoard();
+                    return;
+                  }
+                  makeAiMove();
+                  aiThinking = false;
+                  renderBoard();
+                }, delay);
+              }
+
+              '''
+              text = text.replace(anchor, helpers + anchor, 1)
+
+              play_pattern = re.compile(r"function playMove\(from, to, promotion = 'q', fromAi = false\) \{.*?\n\}\n\nfunction makeAiMove\(\)", re.S)
+              new_play = '''function playMove(from, to, promotion = 'q', fromAi = false) {
+                if ((!fromAi && aiThinking) || game.isGameOver()) return;
+                try {
+                  const move = game.move({ from, to, promotion });
+                  if (!move) return;
+
+                  movingSquare = to;
+                  lastMove = { from, to };
+                  selectedSquare = null;
+                  matchHistory = game.history({ verbose: true });
+                  const event = createEvent(move);
+                  matchEvents.push(event);
+                  checkEvents = matchHistory.filter((item) => item.san?.includes('+') || item.san?.includes('#')).length;
+                  captureEvents = matchHistory.filter((item) => item.captured).length;
+                  persistGame();
+
+                  if (event.severity >= 3) triggerCrownEvent(event);
+                  playSound(event.type === 'checkmate' ? 'mate' : isCapture(move) ? 'capture' : 'move');
+
+                  renderBoard();
+                  updateDocumentTitle();
+
+                  window.setTimeout(() => {
+                    movingSquare = null;
+                    renderBoard();
+                  }, 460);
+
+                  if (game.isGameOver()) {
+                    clearAiTimer();
+                    window.setTimeout(showResult, 650);
+                    return;
+                  }
+
+                  if (!fromAi && aiToggle.checked && game.turn() === 'b') {
+                    scheduleAiMove();
+                  }
+                } catch (error) {
+                  console.warn('Black Crown rejected a move.', error);
+                  selectedSquare = null;
+                  renderBoard();
+                }
+              }
+
+              function makeAiMove()'''
+              text, count = play_pattern.subn(new_play, text, count=1)
+              if count != 1:
+                  raise SystemExit("Could not locate playMove() for the Phase 1 patch")
+
+              reset_pattern = re.compile(r"function resetGame\(\) \{\n")
+              text = reset_pattern.sub("function resetGame() {\n  clearAiTimer();\n  gameSessionId += 1;\n", text, count=1)
+
+              toggle_pattern = re.compile(r"aiToggle\.addEventListener\('change', \(\) => \{.*?\n\}\);", re.S)
+              toggle_replacement = '''aiToggle.addEventListener('change', () => {
+                selectedSquare = null;
+                if (!aiToggle.checked) {
+                  clearAiTimer();
+                } else if (game.turn() === 'b' && !game.isGameOver()) {
+                  scheduleAiMove(420);
+                }
+                persistGame();
+                renderBoard();
+              });'''
+              text, count = toggle_pattern.subn(toggle_replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit("Could not locate AI toggle handler")
+
+              text = text.replace(
+                  "buildDust();\nrestoreSavedGame();\nrenderBoard();",
+                  "buildDust();\nrestoreSavedGame();\nrenderBoard();\nif (aiToggle.checked && game.turn() === 'b' && !game.isGameOver()) scheduleAiMove(420);"
+              )
+              text += "\n" + marker + "\n"
+              path.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Syntax check
+        run: node --check app.js
+
+      - name: Commit stability patch when needed
+        run: |
+          if git diff --quiet; then
+            echo "No stability patch needed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app.js
+          git commit -m "fix: harden Phase 1 game state and AI timing"
+          git push

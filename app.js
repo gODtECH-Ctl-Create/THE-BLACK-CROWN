@@ -79,6 +79,8 @@ let captureEvents = 0;
 let matchEvents = [];
 let matchHistory = [];
 let savedGameId = 0;
+let aiTimerId = null;
+let gameSessionId = 0;
 
 function buildDust() {
   const dust = $('#dust');
@@ -335,7 +337,35 @@ function restoreSavedGame() {
   }
 }
 
-function updateDocumentTitle() {
+function clearAiTimer() {
+      if (aiTimerId !== null) {
+        window.clearTimeout(aiTimerId);
+        aiTimerId = null;
+      }
+      aiThinking = false;
+    }
+
+    function scheduleAiMove(delay = 760) {
+      clearAiTimer();
+      if (!aiToggle.checked || game.isGameOver() || game.turn() !== 'b') return;
+
+      const session = gameSessionId;
+      aiThinking = true;
+      updatePanels();
+      aiTimerId = window.setTimeout(() => {
+        aiTimerId = null;
+        if (session !== gameSessionId || !aiToggle.checked || game.isGameOver() || game.turn() !== 'b') {
+          aiThinking = false;
+          renderBoard();
+          return;
+        }
+        makeAiMove();
+        aiThinking = false;
+        renderBoard();
+      }, delay);
+    }
+
+    function updateDocumentTitle() {
   if (game.isCheckmate()) document.title = 'CHECKMATE | THE BLACK CROWN';
   else if (game.isDraw()) document.title = 'DRAW | THE BLACK CROWN';
   else document.title = `THE BLACK CROWN | ${game.turn() === 'w' ? 'White' : 'Black'} to move`;
@@ -467,54 +497,49 @@ function moveNarration(move) {
 }
 
 function playMove(from, to, promotion = 'q', fromAi = false) {
-  if ((!fromAi && aiThinking) || game.isGameOver()) return;
-  try {
-    const move = game.move({ from, to, promotion });
-    if (!move) return;
+      if ((!fromAi && aiThinking) || game.isGameOver()) return;
+      try {
+        const move = game.move({ from, to, promotion });
+        if (!move) return;
 
-    movingSquare = to;
-    lastMove = { from, to };
-    selectedSquare = null;
-    matchHistory = game.history({ verbose: true });
-    const event = createEvent(move);
-    matchEvents.push(event);
-    checkEvents = matchHistory.filter((item) => item.san?.includes('+') || item.san?.includes('#')).length;
-    captureEvents = matchHistory.filter((item) => item.captured).length;
-    persistGame();
+        movingSquare = to;
+        lastMove = { from, to };
+        selectedSquare = null;
+        matchHistory = game.history({ verbose: true });
+        const event = createEvent(move);
+        matchEvents.push(event);
+        checkEvents = matchHistory.filter((item) => item.san?.includes('+') || item.san?.includes('#')).length;
+        captureEvents = matchHistory.filter((item) => item.captured).length;
+        persistGame();
 
-    if (event.severity >= 3) triggerCrownEvent(event);
-    playSound(event.type === 'checkmate' ? 'mate' : isCapture(move) ? 'capture' : 'move');
+        if (event.severity >= 3) triggerCrownEvent(event);
+        playSound(event.type === 'checkmate' ? 'mate' : isCapture(move) ? 'capture' : 'move');
 
-    renderBoard();
-    updateDocumentTitle();
-
-    window.setTimeout(() => {
-      movingSquare = null;
-      renderBoard();
-    }, 460);
-
-    if (game.isGameOver()) {
-      window.setTimeout(showResult, 650);
-      return;
-    }
-
-    if (!fromAi && aiToggle.checked && game.turn() === 'b') {
-      aiThinking = true;
-      updatePanels();
-      window.setTimeout(() => {
-        makeAiMove();
-        aiThinking = false;
         renderBoard();
-      }, 760);
-    }
-  } catch (error) {
-    console.warn('Black Crown rejected a move.', error);
-    selectedSquare = null;
-    renderBoard();
-  }
-}
+        updateDocumentTitle();
 
-function makeAiMove() {
+        window.setTimeout(() => {
+          movingSquare = null;
+          renderBoard();
+        }, 460);
+
+        if (game.isGameOver()) {
+          clearAiTimer();
+          window.setTimeout(showResult, 650);
+          return;
+        }
+
+        if (!fromAi && aiToggle.checked && game.turn() === 'b') {
+          scheduleAiMove();
+        }
+      } catch (error) {
+        console.warn('Black Crown rejected a move.', error);
+        selectedSquare = null;
+        renderBoard();
+      }
+    }
+
+    function makeAiMove() {
   if (game.isGameOver() || game.turn() !== 'b') return;
   const moves = game.moves({ verbose: true });
   if (!moves.length) return;
@@ -555,6 +580,8 @@ function undoMove() {
 }
 
 function resetGame() {
+  clearAiTimer();
+  gameSessionId += 1;
   game.reset();
   selectedSquare = null;
   dragSource = null;
@@ -750,10 +777,15 @@ $('#storyNewGame').addEventListener('click', () => {
   resetGame();
 });
 aiToggle.addEventListener('change', () => {
-  selectedSquare = null;
-  persistGame();
-  renderBoard();
-});
+      selectedSquare = null;
+      if (!aiToggle.checked) {
+        clearAiTimer();
+      } else if (game.turn() === 'b' && !game.isGameOver()) {
+        scheduleAiMove(420);
+      }
+      persistGame();
+      renderBoard();
+    });
 
 storyOverlay.addEventListener('click', (event) => {
   if (event.target === storyOverlay) closeStory();
@@ -773,4 +805,7 @@ window.addEventListener('keydown', (event) => {
 buildDust();
 restoreSavedGame();
 renderBoard();
+if (aiToggle.checked && game.turn() === 'b' && !game.isGameOver()) scheduleAiMove(420);
 updateDocumentTitle();
+
+/* phase1-stability-v1 */
