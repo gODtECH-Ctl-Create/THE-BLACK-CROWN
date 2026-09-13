@@ -1,0 +1,167 @@
+/* THE BLACK CROWN · Pawn promotion transformation */
+
+.promotion-transformation {
+  position: fixed;
+  z-index: 86;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.promotion-transformation > * {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.promotion-veil {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,0,0,.88) 0 22%, rgba(18,16,14,.62) 42%, transparent 72%);
+  opacity: 0;
+  animation: promotionVeil 1.7s ease forwards;
+}
+
+.promotion-smoke {
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(194,172,126,.10), rgba(70,18,18,.14) 36%, transparent 72%);
+  filter: blur(12px);
+  opacity: 0;
+  animation: promotionSmoke 1.65s ease forwards;
+}
+
+.promotion-ring {
+  border-radius: 50%;
+  border: 1px solid rgba(194,172,126,.42);
+  box-shadow: 0 0 30px rgba(194,172,126,.08);
+}
+
+.promotion-ring-outer {
+  width: 26px;
+  height: 26px;
+  opacity: 0;
+  animation: promotionRing 1.55s cubic-bezier(.16,.8,.26,1) forwards;
+}
+
+.promotion-ring-inner {
+  width: 68px;
+  height: 68px;
+  border-color: rgba(157,41,41,.48);
+  opacity: 0;
+  animation: promotionInnerRing 1.25s ease forwards;
+}
+
+.promotion-sigil {
+  color: rgba(194,172,126,.78);
+  font: 34px/1 Cinzel, serif;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(.55) rotate(-15deg);
+  animation: promotionSigil 1.15s ease forwards;
+}
+
+.promotion-pawn {
+  color: var(--paper);
+  font: 58px/1 "Times New Roman", serif;
+  filter: drop-shadow(0 0 20px rgba(236,230,219,.12));
+  opacity: 0;
+  animation: pawnAscend .62s cubic-bezier(.16,.82,.3,1) forwards;
+}
+
+.promotion-slash {
+  width: 5px;
+  height: 96px;
+  background: linear-gradient(180deg, transparent, var(--gold-bright), transparent);
+  box-shadow: 0 0 24px rgba(194,172,126,.32);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(34deg) scaleY(.15);
+  animation: promotionSlash .42s ease .62s forwards;
+}
+
+.promotion-piece {
+  color: var(--gold-bright);
+  font: 76px/1 "Times New Roman", serif;
+  text-shadow: 0 0 26px rgba(194,172,126,.24);
+  opacity: 0;
+  transform: translate(-50%, -45%) scale(.22);
+  animation: pieceMaterialize .95s cubic-bezier(.16,.86,.24,1) .56s forwards;
+}
+
+.promotion-piece.is-underpromotion {
+  color: #e1d5bc;
+  text-shadow: 0 0 24px rgba(236,230,219,.18);
+}
+
+.promotion-shard {
+  width: 3px;
+  height: 15px;
+  border-radius: 999px;
+  background: var(--gold-bright);
+  opacity: 0;
+  transform-origin: 50% 70px;
+  animation: promotionShard .9s cubic-bezier(.15,.9,.25,1) var(--shard-delay) forwards;
+}
+
+@keyframes promotionVeil {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.65); }
+  22% { opacity: 1; }
+  100% { opacity: .08; transform: translate(-50%,-50%) scale(1.45); }
+}
+
+@keyframes promotionSmoke {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.55); }
+  26% { opacity: .8; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.55); }
+}
+
+@keyframes promotionRing {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.4) rotate(0deg); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(5.2) rotate(220deg); }
+}
+
+@keyframes promotionInnerRing {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.5); }
+  25% { opacity: .9; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(2.2); }
+}
+
+@keyframes promotionSigil {
+  0% { opacity: 0; transform: translate(-50%,-50%) scale(.55) rotate(-15deg); }
+  28% { opacity: .8; }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(1.18) rotate(8deg); }
+}
+
+@keyframes pawnAscend {
+  0% { opacity: 0; transform: translate(-50%, 22px) scale(.72); }
+  22% { opacity: 1; }
+  72% { opacity: .8; transform: translate(-50%, -34px) scale(1.06); }
+  100% { opacity: 0; transform: translate(-50%, -48px) scale(.6); }
+}
+
+@keyframes promotionSlash {
+  0% { opacity: 0; transform: translate(-50%,-50%) rotate(34deg) scaleY(.15); }
+  30% { opacity: .92; }
+  100% { opacity: 0; transform: translate(-50%,-50%) rotate(34deg) scaleY(1.1); }
+}
+
+@keyframes pieceMaterialize {
+  0% { opacity: 0; transform: translate(-50%, -45%) scale(.22); filter: blur(9px); }
+  35% { opacity: 1; transform: translate(-50%, -50%) scale(1.16); filter: blur(0); }
+  68% { transform: translate(-50%, -50%) scale(.94); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); filter: blur(.3px); }
+}
+
+@keyframes promotionShard {
+  0% { opacity: 0; transform: rotate(var(--shard-angle)) translateY(-9px) scaleY(.2); }
+  16% { opacity: .9; }
+  100% { opacity: 0; transform: rotate(var(--shard-angle)) translateY(calc(var(--shard-distance) * -1)) scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promotion-transformation { display: none; }
+}
