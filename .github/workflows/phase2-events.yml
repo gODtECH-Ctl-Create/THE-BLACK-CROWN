@@ -30,6 +30,9 @@ jobs:
       - name: Syntax check settings bridge
         run: node --check settings-bridge.js
 
+      - name: Syntax check app launch controller
+        run: node --check launch-screen.js
+
       - name: Syntax check game engine
         run: node --check app.js
 
