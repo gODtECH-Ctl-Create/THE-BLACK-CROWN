@@ -51,6 +51,9 @@ jobs:
       - name: Syntax check game soundscape
         run: node --check soundscape.js
 
+      - name: Syntax check Hall of Records
+        run: node --check records.js
+
       - name: Install chess.js for rule audit
         run: npm install --no-save chess.js@1.4.0
 
