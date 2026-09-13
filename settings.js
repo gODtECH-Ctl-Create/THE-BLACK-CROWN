@@ -98,12 +98,35 @@
   overlay.addEventListener('click', (event) => { if (event.target === overlay) close(); });
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !overlay.hidden) close(); });
 
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('#newGameBtn');
+    if (!button || !settings.confirmNewGame) return;
+    if (document.getElementById('gameScreen')?.hidden) return;
+    const rawSave = localStorage.getItem('black-crown-save');
+    if (!rawSave) return;
+    try {
+      const saved = JSON.parse(rawSave);
+      if (!Array.isArray(saved.moves) || !saved.moves.length) return;
+      if (!window.confirm('Start a new battle? The current game will be replaced.')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    } catch {
+      // Ignore invalid save data; the game engine handles cleanup.
+    }
+  }, true);
+
   function injectLinks() {
     const nav = screen.querySelector('.landing-nav-links');
     if (nav && !nav.querySelector('.landing-settings-link')) nav.insertAdjacentHTML('beforeend', '<a class="landing-settings-link" href="#settings">SETTINGS</a>');
     screen.querySelectorAll('.landing-settings-link').forEach((link) => link.addEventListener('click', (event) => { event.preventDefault(); open(); }));
     document.getElementById('gameSettingsBtn')?.addEventListener('click', open, { once: true });
   }
+
+  window.addEventListener('black-crown-settings-changed', (event) => {
+    const nextDifficulty = event.detail?.difficulty;
+    if (nextDifficulty) document.documentElement.dataset.defaultDifficulty = nextDifficulty;
+  });
 
   injectLinks();
   sync();
