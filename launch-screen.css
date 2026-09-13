@@ -1,0 +1,21 @@
+/* THE BLACK CROWN · app launch screen */
+.launch-shell{position:fixed;inset:0;z-index:1500;display:grid;place-items:center;background:#030304;color:var(--text);overflow:hidden;opacity:1;transition:opacity .45s ease}
+.launch-shell[hidden]{display:none}
+.launch-shell.leaving{opacity:0}
+.launch-shell::before{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.075),transparent 34%),radial-gradient(circle at 50% 100%,rgba(120,30,30,.12),transparent 42%);animation:launchPulse 2.4s ease-in-out infinite}
+.launch-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(circle at 30% 20%,rgba(255,255,255,.35) 0 1px,transparent 1px),radial-gradient(circle at 70% 80%,rgba(255,255,255,.22) 0 1px,transparent 1px);background-size:7px 7px,11px 11px;mix-blend-mode:screen}
+.launch-card{position:relative;z-index:1;width:min(520px,86vw);text-align:center}
+.launch-mark{width:96px;height:96px;margin:0 auto 24px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.22);border-radius:50%;font:600 44px/1 var(--display-font);box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 0 55px rgba(255,255,255,.08);animation:launchFloat 1.7s ease-in-out infinite}
+.launch-kicker{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.launch-title{margin:0;font:800 clamp(28px,5vw,44px)/1.02 var(--display-font);letter-spacing:.08em}
+.launch-title em{display:block;font-style:normal;font-weight:500;color:#a8a8ad}
+.launch-status{margin:16px 0 20px;color:#d0d0d4;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.launch-progress{width:min(320px,70vw);height:2px;margin:0 auto;background:rgba(255,255,255,.1);overflow:hidden}
+.launch-progress i{display:block;width:34%;height:100%;background:linear-gradient(90deg,transparent,#ededed,transparent);transform:translateX(-120%);animation:launchSweep 1.35s ease-in-out infinite}
+.launch-lines{display:flex;justify-content:center;gap:16px;margin-top:16px;color:#66666d;font-size:9px;letter-spacing:.16em;text-transform:uppercase}
+.launch-line.active{color:#c8c8cb}
+@keyframes launchPulse{0%,100%{transform:scale(.98);opacity:.7}50%{transform:scale(1.04);opacity:1}}
+@keyframes launchFloat{0%,100%{transform:translateY(0);box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 0 42px rgba(255,255,255,.06)}50%{transform:translateY(-5px);box-shadow:0 0 0 1px rgba(255,255,255,.03) inset,0 0 70px rgba(255,255,255,.1)}}
+@keyframes launchSweep{0%{transform:translateX(-120%)}55%,100%{transform:translateX(330%)}}
+@media (prefers-reduced-motion:reduce){.launch-shell::before,.launch-mark,.launch-progress i{animation:none}.launch-progress i{transform:translateX(130%)}.launch-shell{transition:none}}
+@media (max-width:560px){.launch-mark{width:82px;height:82px;font-size:38px}.launch-lines{gap:10px;font-size:8px}.launch-card{width:min(420px,88vw)}}
