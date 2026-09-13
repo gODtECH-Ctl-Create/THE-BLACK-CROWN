@@ -1,0 +1,179 @@
+/* THE BLACK CROWN · Pawn takes Queen cinematic strike */
+
+body[data-pawn-queen-strike='active'] .pawn-queen-assault {
+  opacity: 1;
+}
+
+.pawn-queen-assault {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(420px, 76vw);
+  height: min(320px, 58vw);
+  translate: -50% -50%;
+  pointer-events: none;
+  z-index: 96;
+  opacity: 0;
+  filter: drop-shadow(0 24px 40px rgba(0,0,0,.35));
+}
+
+.pawn-queen-assault .strike-pawn,
+.pawn-queen-assault .strike-queen,
+.pawn-queen-assault .strike-impact,
+.pawn-queen-assault .strike-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.strike-pawn {
+  left: 12% !important;
+  top: 72% !important;
+  z-index: 4;
+  color: #ece6db;
+  font: 900 clamp(58px, 10vw, 100px)/1 "Times New Roman", serif;
+  text-shadow: 0 0 24px rgba(236,230,219,.22), 0 14px 24px rgba(0,0,0,.55);
+  animation: pawnLaunch 980ms cubic-bezier(.08,.9,.15,1) both;
+}
+
+.strike-queen {
+  left: 66% !important;
+  top: 25% !important;
+  z-index: 3;
+  color: var(--gold-bright);
+  font: 900 clamp(72px, 12vw, 122px)/1 "Times New Roman", serif;
+  text-shadow: 0 0 28px rgba(194,172,126,.25), 0 18px 30px rgba(0,0,0,.55);
+  animation: queenWaitThenBreak 980ms cubic-bezier(.14,.8,.16,1) both;
+}
+
+.strike-impact {
+  left: 72% !important;
+  top: 29% !important;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  z-index: 6;
+  background: rgba(255,245,215,.95);
+  box-shadow: 0 0 18px rgba(255,245,215,.88), 0 0 55px rgba(194,172,126,.45), 0 0 105px rgba(157,41,41,.25);
+  transform: translate(-50%,-50%) scale(.1);
+  opacity: 0;
+  animation: strikeFlash 980ms ease both;
+}
+
+.strike-ring {
+  left: 72% !important;
+  top: 29% !important;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(236,230,219,.5);
+  z-index: 2;
+  transform: translate(-50%,-50%) scale(.1);
+  opacity: 0;
+  animation: strikeShockwave 980ms cubic-bezier(.06,.82,.15,1) both;
+}
+
+.pawn-queen-assault .strike-spark {
+  position: absolute;
+  left: 72%;
+  top: 29%;
+  width: 4px;
+  height: 22px;
+  transform-origin: 50% 100%;
+  background: linear-gradient(to bottom, rgba(255,245,215,.95), rgba(255,245,215,0));
+  opacity: 0;
+  animation: sparkFly 820ms cubic-bezier(.1,.9,.15,1) both;
+  animation-delay: var(--spark-delay);
+  transform: translate(-50%,-50%) rotate(var(--spark-angle)) scaleY(.2);
+}
+
+.strike-pawn.dark-pawn { color: #161513; text-shadow: 0 0 22px rgba(194,172,126,.18), 0 14px 24px rgba(0,0,0,.72); }
+
+@keyframes pawnLaunch {
+  0% {
+    opacity: 0;
+    transform: translate3d(-10px, 120px, 0) rotate(-15deg) scale(.7);
+  }
+  16% {
+    opacity: 1;
+    transform: translate3d(-2px, 82px, 0) rotate(-10deg) scale(.88);
+  }
+  42% {
+    transform: translate3d(34px, 26px, 0) rotate(-2deg) scale(1.02);
+  }
+  60% {
+    transform: translate3d(108px, -22px, 0) rotate(7deg) scale(1.12);
+  }
+  68% {
+    transform: translate3d(142px, -35px, 0) rotate(11deg) scale(1.16);
+  }
+  76% {
+    transform: translate3d(133px, -28px, 0) rotate(4deg) scale(1.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(150px, -18px, 0) rotate(1deg) scale(.96);
+  }
+}
+
+@keyframes queenWaitThenBreak {
+  0%, 54% {
+    opacity: 1;
+    transform: translate(-50%,-50%) scale(1) rotate(0);
+  }
+  60% {
+    transform: translate(-50%,-50%) scale(1.08) rotate(-5deg);
+  }
+  66% {
+    opacity: .92;
+    transform: translate(-50%,-50%) scale(.98) rotate(5deg);
+  }
+  73% {
+    opacity: .45;
+    transform: translate(-50%,-50%) scale(1.22) rotate(-4deg);
+    filter: blur(1px);
+  }
+  84% {
+    opacity: .15;
+    transform: translate(-50%,-50%) scale(1.34) rotate(2deg);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%,-50%) scale(1.52);
+    filter: blur(9px);
+  }
+}
+
+@keyframes strikeFlash {
+  0%, 52% { opacity: 0; transform: translate(-50%,-50%) scale(.1); }
+  58% { opacity: .96; transform: translate(-50%,-50%) scale(.55); }
+  68% { opacity: .75; transform: translate(-50%,-50%) scale(1.8); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(3.8); }
+}
+
+@keyframes strikeShockwave {
+  0%, 54% { opacity: 0; transform: translate(-50%,-50%) scale(.1); }
+  60% { opacity: .82; transform: translate(-50%,-50%) scale(.55); }
+  100% { opacity: 0; transform: translate(-50%,-50%) scale(8.8); }
+}
+
+@keyframes sparkFly {
+  0%, 48% { opacity: 0; transform: translate(-50%,-50%) rotate(var(--spark-angle)) scaleY(.2); }
+  58% { opacity: .95; transform: translate(-50%,-50%) rotate(var(--spark-angle)) translateY(-5px) scaleY(1); }
+  100% { opacity: 0; transform: translate(-50%,-50%) rotate(var(--spark-angle)) translateY(var(--spark-distance)) scaleY(.35); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pawn-queen-assault .strike-pawn,
+  .pawn-queen-assault .strike-queen,
+  .pawn-queen-assault .strike-impact,
+  .pawn-queen-assault .strike-ring,
+  .pawn-queen-assault .strike-spark {
+    animation: none !important;
+  }
+  .pawn-queen-assault .strike-pawn,
+  .pawn-queen-assault .strike-queen {
+    opacity: 1;
+  }
+}
