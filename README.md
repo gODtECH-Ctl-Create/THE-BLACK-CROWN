@@ -6,9 +6,9 @@
 
 ## The experience
 
-THE BLACK CROWN is structured like a game, not a utility:
-
 `ENTRANCE → GAME CHAMBER → PLAY → CROWN EVENTS → RESULT → THE CHRONICLE`
+
+The entrance establishes the world. The game chamber focuses entirely on the board and play. The Chronicle turns the recorded match into a narrative timeline when the battle ends.
 
 ## What is alive
 
@@ -16,8 +16,8 @@ THE BLACK CROWN is structured like a game, not a utility:
 - Crown Artificial Intelligence (AI)
 - Click and drag movement
 - Promotion choice for Queen, Rook, Bishop or Knight
-- Crown Events for important captures, checks and special moves
-- Custom gODtECH engraving across the interface and board frame
+- Crown Events for important captures, checks, checkmate and special moves
+- Custom gODtECH engraving through the visual system and board frame
 - End-of-game Chronicle with a narrative entry for every move
 - Local game persistence
 - Fog, grain, dust, sound cues and responsive gothic presentation
@@ -46,7 +46,7 @@ Normal movement stays restrained. More consequential moments escalate visually.
 
 At the end of a match, the recorded moves become a narrative timeline with match statistics and stronger prose around consequential moments.
 
-The narrator is currently deterministic and dependency-light. It does not call an external language model. This keeps the game fully browser-first while leaving room for a future richer AI narrator.
+The narrator is currently deterministic and dependency-light. It does not call an external language model. This keeps the game browser-first while leaving a clean seam for a richer Artificial Intelligence narrator later.
 
 ## Architecture
 
@@ -81,6 +81,6 @@ Open `http://localhost:4173`.
 
 **Act II build · playable · actively developing**
 
-Current branch: entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment, and end-of-game Chronicle.
+Current branch includes the entrance/game-chamber split, gODtECH engraving, drag-and-drop play, promotion choice, Crown Events, special-move treatment and the end-of-game Chronicle.
 
 > **Built for experimentation. Designed to grow teeth.**
