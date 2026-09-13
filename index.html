@@ -3,143 +3,194 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#070707" />
-  <meta name="description" content="THE BLACK CROWN — a gothic chess arena where every move leaves a mark." />
-  <title>THE BLACK CROWN | Gothic Chess</title>
+  <meta name="theme-color" content="#050505" />
+  <meta name="description" content="THE BLACK CROWN — a gothic chess experience by gODtECH." />
+  <title>THE BLACK CROWN | gODtECH</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
   <div class="vignette" aria-hidden="true"></div>
+  <div class="fog fog-one" aria-hidden="true"></div>
+  <div class="fog fog-two" aria-hidden="true"></div>
   <div class="dust" id="dust" aria-hidden="true"></div>
+  <div class="event-fx" id="eventFx" aria-hidden="true"></div>
 
   <main class="app-shell">
-    <header class="topbar">
-      <div class="brand-mark" aria-label="The Black Crown">
-        <span class="crown-glyph">♛</span>
-        <div>
-          <p class="eyebrow">THE BLACK CROWN</p>
-          <h1>THE GAME REMEMBERS.</h1>
+    <section class="screen entrance-screen" id="entranceScreen" aria-labelledby="entranceTitle">
+      <div class="entrance-crown" aria-hidden="true">♛</div>
+      <div class="engraving engraving-top">gODtECH · CTRL + CREATE</div>
+      <div class="entrance-inner">
+        <span class="eyebrow">gODtECH PRESENTS</span>
+        <div class="ornament" aria-hidden="true"><span></span><b>♛</b><span></span></div>
+        <h1 id="entranceTitle">THE BLACK<br /><em>CROWN</em></h1>
+        <p class="entrance-tagline">Every square is a throne. Every move leaves evidence.</p>
+        <button class="enter-button" id="enterGameBtn" type="button">
+          <span>ENTER THE CROWN</span>
+          <span class="enter-arrow">↗</span>
+        </button>
+        <div class="entrance-meta">
+          <span>GOTHIC CHESS EXPERIENCE</span>
+          <span>BUILT BY gODtECH</span>
+          <span>NO ACCOUNT REQUIRED</span>
         </div>
       </div>
-      <div class="topbar-status">
-        <span class="status-dot"></span>
-        <span id="connectionLabel">LOCAL ARENA</span>
-      </div>
-    </header>
-
-    <section class="hero-copy">
-      <div>
-        <span class="section-kicker">AN UNFORGIVING BOARD</span>
-        <h2>Every square is a throne.<br /><em>Take one.</em></h2>
-      </div>
-      <p class="hero-note">A small gothic chess engine built for the browser. No account. No ceremony. Just the board.</p>
+      <div class="engraving engraving-bottom">THE GAME REMEMBERS</div>
     </section>
 
-    <section class="game-layout">
-      <aside class="panel left-panel">
-        <div class="panel-heading">
-          <span>01</span>
-          <h3>THE PLAYERS</h3>
+    <section class="screen game-screen" id="gameScreen" aria-labelledby="gameTitle" hidden>
+      <header class="game-topbar">
+        <button class="brand-lockup" id="backToEntranceBtn" type="button" aria-label="Return to The Black Crown entrance">
+          <span class="brand-crown">♛</span>
+          <span>
+            <small>gODtECH</small>
+            <strong>THE BLACK CROWN</strong>
+          </span>
+        </button>
+        <div class="game-title-block">
+          <span class="section-kicker">THE GAME CHAMBER</span>
+          <h1 id="gameTitle">THE BOARD REMEMBERS.</h1>
         </div>
-        <div class="player-card active-player" id="whiteCard">
-          <div class="player-crown">♔</div>
-          <div>
-            <span class="player-label">WHITE</span>
-            <strong id="whiteStatus">YOUR MOVE</strong>
-          </div>
+        <div class="top-status">
+          <span class="status-dot"></span>
+          <span id="connectionLabel">LOCAL ARENA</span>
         </div>
-        <div class="player-card" id="blackCard">
-          <div class="player-crown">♚</div>
-          <div>
-            <span class="player-label">BLACK</span>
-            <strong id="blackStatus">WAITING</strong>
-          </div>
-        </div>
+      </header>
 
-        <div class="control-group">
-          <label class="switch-row">
-            <span>
-              <small>OPPONENT</small>
-              <b>CROWN AI</b>
-            </span>
-            <input type="checkbox" id="aiToggle" checked />
-            <span class="switch" aria-hidden="true"></span>
-          </label>
-        </div>
-
-        <div class="button-stack">
-          <button class="action-button primary" id="newGameBtn">NEW GAME <span>↗</span></button>
-          <button class="action-button" id="undoBtn">UNDO MOVE <span>⌫</span></button>
-          <button class="action-button" id="flipBtn">FLIP BOARD <span>↻</span></button>
-        </div>
-
-        <div class="quote-card">
-          <span>THE CROWN SPEAKS</span>
-          <p id="taunt">“Do not confuse silence with mercy.”</p>
-        </div>
-      </aside>
-
-      <section class="board-stage" aria-label="Chess game">
-        <div class="board-frame">
-          <div class="board-rim outer"></div>
-          <div class="board-header">
-            <span id="gameStatus">WHITE TO MOVE</span>
-            <span id="moveCounter">MOVE 01</span>
+      <section class="game-layout">
+        <aside class="panel left-panel">
+          <div class="panel-heading"><span>01</span><h2>THE PLAYERS</h2></div>
+          <div class="player-card active-player" id="whiteCard">
+            <div class="player-crown">♔</div>
+            <div><span class="player-label">WHITE</span><strong id="whiteStatus">YOUR MOVE</strong></div>
           </div>
-          <div class="board-wrap">
-            <div class="coordinates files" id="fileCoords"></div>
-            <div class="coordinates ranks" id="rankCoords"></div>
-            <div class="chessboard" id="board" role="grid" aria-label="Chess board"></div>
-            <div class="check-aura" id="checkAura" aria-hidden="true"></div>
+          <div class="player-card" id="blackCard">
+            <div class="player-crown">♚</div>
+            <div><span class="player-label">BLACK</span><strong id="blackStatus">WAITING</strong></div>
           </div>
-          <div class="board-footer">
-            <span>GOTHIC RULESET · STANDARD CHESS</span>
-            <span id="fenLabel">READY</span>
+
+          <div class="control-group">
+            <label class="switch-row">
+              <span><small>OPPONENT</small><b>CROWN AI</b></span>
+              <input type="checkbox" id="aiToggle" checked />
+              <span class="switch" aria-hidden="true"></span>
+            </label>
           </div>
-        </div>
-        <div class="board-shadow" aria-hidden="true"></div>
+
+          <div class="button-stack">
+            <button class="action-button primary" id="newGameBtn" type="button">NEW GAME <span>↗</span></button>
+            <button class="action-button" id="undoBtn" type="button">UNDO MOVE <span>⌫</span></button>
+            <button class="action-button" id="flipBtn" type="button">FLIP BOARD <span>↻</span></button>
+            <button class="action-button" id="storyBtn" type="button">OPEN CHRONICLE <span>◒</span></button>
+          </div>
+
+          <div class="quote-card">
+            <span>THE CROWN SPEAKS</span>
+            <p id="taunt">“Do not confuse silence with mercy.”</p>
+          </div>
+        </aside>
+
+        <section class="board-stage" aria-label="The Black Crown chess board">
+          <div class="board-seal" aria-hidden="true"><span>gODtECH</span><b>♛</b><span>BLACK CROWN</span></div>
+          <div class="board-frame">
+            <div class="board-rim outer"></div>
+            <div class="board-rim inner"></div>
+            <div class="board-header">
+              <span id="gameStatus">WHITE TO MOVE</span>
+              <span id="moveCounter">MOVE 01</span>
+            </div>
+            <div class="board-wrap">
+              <div class="board-engraving board-engraving-top">gODtECH · THE BLACK CROWN · gODtECH</div>
+              <div class="coordinates files" id="fileCoords"></div>
+              <div class="coordinates ranks" id="rankCoords"></div>
+              <div class="chessboard" id="board" role="grid" aria-label="Chess board"></div>
+              <div class="check-aura" id="checkAura" aria-hidden="true"></div>
+              <div class="board-engraving board-engraving-bottom">THE GAME REMEMBERS · 2026</div>
+            </div>
+            <div class="board-footer">
+              <span>STANDARD CHESS · GOTHIC PRESENTATION</span>
+              <span id="fenLabel">READY</span>
+            </div>
+          </div>
+          <div class="board-shadow" aria-hidden="true"></div>
+        </section>
+
+        <aside class="panel right-panel">
+          <div class="panel-heading"><span>02</span><h2>THE CHRONICLE</h2></div>
+          <div class="capture-zone">
+            <div class="capture-heading"><span>TAKEN BY WHITE</span><span id="whiteCaptureCount">0</span></div>
+            <div class="captured-pieces" id="whiteCaptures">—</div>
+            <div class="capture-heading"><span>TAKEN BY BLACK</span><span id="blackCaptureCount">0</span></div>
+            <div class="captured-pieces" id="blackCaptures">—</div>
+          </div>
+          <div class="moves-header"><span>MOVE LOG</span><span id="moveTotal">0 PLY</span></div>
+          <div class="move-list" id="moveList" aria-live="polite"></div>
+          <div class="stat-grid">
+            <div><span>CHECKS</span><strong id="checkCount">0</strong></div>
+            <div><span>CAPTURES</span><strong id="captureCount">0</strong></div>
+            <div><span>HALF CLOCK</span><strong id="halfClock">0</strong></div>
+          </div>
+          <div class="side-inscription">gODtECH · CTRL + CREATE · THE BLACK CROWN</div>
+        </aside>
       </section>
 
-      <aside class="panel right-panel">
-        <div class="panel-heading">
-          <span>02</span>
-          <h3>THE CHRONICLE</h3>
-        </div>
-        <div class="capture-zone">
-          <div class="capture-heading"><span>TAKEN BY WHITE</span><span id="whiteCaptureCount">0</span></div>
-          <div class="captured-pieces" id="whiteCaptures">—</div>
-          <div class="capture-heading"><span>TAKEN BY BLACK</span><span id="blackCaptureCount">0</span></div>
-          <div class="captured-pieces" id="blackCaptures">—</div>
-        </div>
-        <div class="moves-header"><span>MOVE LOG</span><span id="moveTotal">0 PLY</span></div>
-        <div class="move-list" id="moveList" aria-live="polite"></div>
-        <div class="stat-grid">
-          <div><span>CHECKS</span><strong id="checkCount">0</strong></div>
-          <div><span>CAPTURES</span><strong id="captureCount">0</strong></div>
-          <div><span>HALF CLOCK</span><strong id="halfClock">0</strong></div>
-        </div>
-      </aside>
+      <footer class="footer-bar">
+        <span>THE BLACK CROWN / gODtECH / 2026</span>
+        <span>BUILT TO FEEL LIKE A GAME FOUND IN A HAUNTED ARCHIVE.</span>
+      </footer>
     </section>
-
-    <footer class="footer-bar">
-      <span>THE BLACK CROWN / 2026</span>
-      <span>BUILT TO FEEL LIKE A GAME FOUND IN A HAUNTED ARCHIVE.</span>
-    </footer>
   </main>
 
-  <div class="result-overlay" id="resultOverlay" hidden>
-    <div class="result-card">
-      <span class="section-kicker">THE BOARD HAS SPOKEN</span>
-      <div class="result-crown">♛</div>
-      <h2 id="resultTitle">CHECKMATE</h2>
-      <p id="resultCopy">The crown has chosen a victor.</p>
-      <button class="action-button primary" id="resultNewGame">PLAY AGAIN <span>↗</span></button>
+  <div class="modal-shell" id="promotionModal" hidden>
+    <div class="modal-card promotion-card" role="dialog" aria-modal="true" aria-labelledby="promotionTitle">
+      <span class="section-kicker">THE PAWN HAS REACHED THE THRONE</span>
+      <div class="modal-crown">♛</div>
+      <h2 id="promotionTitle">CHOOSE THE CROWN</h2>
+      <p>Four pieces remain. One decides what survives.</p>
+      <div class="promotion-options" id="promotionOptions"></div>
     </div>
+  </div>
+
+  <div class="modal-shell" id="resultOverlay" hidden>
+    <div class="modal-card result-card">
+      <span class="section-kicker">THE BOARD HAS SPOKEN</span>
+      <div class="modal-crown" id="resultCrown">♛</div>
+      <span class="result-badge" id="resultBadge">CHECKMATE</span>
+      <h2 id="resultTitle">THE CROWN HAS SPOKEN</h2>
+      <p id="resultCopy">The archive records everything.</p>
+      <div class="result-actions">
+        <button class="action-button primary" id="openStoryBtn" type="button">READ THE CHRONICLE <span>◒</span></button>
+        <button class="action-button" id="resultNewGame" type="button">PLAY AGAIN <span>↗</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-shell story-shell" id="storyOverlay" hidden>
+    <div class="story-card" role="dialog" aria-modal="true" aria-labelledby="storyTitle">
+      <div class="story-header">
+        <div>
+          <span class="section-kicker">THE CROWN CHRONICLE</span>
+          <h2 id="storyTitle">THE STORY OF THIS GAME</h2>
+        </div>
+        <button class="close-modal" id="closeStoryBtn" type="button" aria-label="Close chronicle">×</button>
+      </div>
+      <div class="story-summary" id="storySummary"></div>
+      <div class="story-timeline" id="storyTimeline"></div>
+      <div class="story-footer">
+        <span>gODtECH · THE GAME REMEMBERS</span>
+        <button class="action-button primary" id="storyNewGame" type="button">NEW GAME <span>↗</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="event-caption" id="eventCaption" aria-hidden="true">
+    <span id="eventCaptionKicker">CROWN EVENT</span>
+    <strong id="eventCaptionTitle">THE QUEEN FALLS</strong>
+    <span id="eventCaptionCopy">The board has noticed.</span>
   </div>
 
   <script type="module" src="app.js"></script>
