@@ -24,6 +24,12 @@ jobs:
       - name: Syntax check landing script
         run: node --check landing.js
 
+      - name: Syntax check settings chamber
+        run: node --check settings.js
+
+      - name: Syntax check settings bridge
+        run: node --check settings-bridge.js
+
       - name: Syntax check game engine
         run: node --check app.js
 
