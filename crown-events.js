@@ -96,6 +96,7 @@
       if (!caption.classList.contains('show')) {
         body.removeAttribute('data-crown-event');
         eventFx.querySelectorAll('.event-crest').forEach((node) => node.remove());
+        lastEventKey = '';
       }
     }, type === 'checkmate' ? 1800 : 950);
   }
