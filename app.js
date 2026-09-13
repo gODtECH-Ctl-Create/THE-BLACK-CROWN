@@ -179,7 +179,6 @@ function renderBoard() {
         selectedSquare = squareName;
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('text/plain', squareName);
-        renderBoard();
       });
       node.addEventListener('dragend', () => {
         dragSource = null;
@@ -467,8 +466,8 @@ function moveNarration(move) {
   return `${mover} moves the ${piece} from ${move.from} to ${move.to}.`;
 }
 
-function playMove(from, to, promotion = 'q') {
-  if (aiThinking || game.isGameOver()) return;
+function playMove(from, to, promotion = 'q', fromAi = false) {
+  if ((!fromAi && aiThinking) || game.isGameOver()) return;
   try {
     const move = game.move({ from, to, promotion });
     if (!move) return;
@@ -499,7 +498,7 @@ function playMove(from, to, promotion = 'q') {
       return;
     }
 
-    if (aiToggle.checked && game.turn() === 'b') {
+    if (!fromAi && aiToggle.checked && game.turn() === 'b') {
       aiThinking = true;
       updatePanels();
       window.setTimeout(() => {
@@ -534,7 +533,7 @@ function makeAiMove() {
 
   const pool = scored.slice(0, Math.min(3, scored.length));
   const choice = pool[Math.floor(Math.random() * pool.length)].move;
-  playMove(choice.from, choice.to, choice.promotion || 'q');
+  playMove(choice.from, choice.to, choice.promotion || 'q', true);
 }
 
 function undoMove() {
