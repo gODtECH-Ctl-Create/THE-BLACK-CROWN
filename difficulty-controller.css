@@ -1,67 +1,151 @@
-/* THE BLACK CROWN · Crown difficulty controls */
+/* THE BLACK CROWN · Match setup and Crown difficulty */
 
-.difficulty-control {
+.control-group[hidden] { display: none !important; }
+
+.mode-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
   display: grid;
-  gap: 8px;
-  margin-top: 12px;
+  place-items: center;
+  padding: 22px;
+  background: rgba(3,3,3,.84);
+  backdrop-filter: blur(16px);
 }
 
-.difficulty-control label {
-  display: grid;
-  gap: 4px;
-  color: var(--muted);
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-}
-
-.difficulty-control select {
-  width: 100%;
-  appearance: none;
+.mode-card {
+  width: min(860px, 100%);
+  max-height: min(900px, calc(100vh - 42px));
+  overflow: auto;
   border: 1px solid var(--line-strong);
-  border-radius: 0;
-  padding: 11px 34px 11px 12px;
-  color: var(--paper);
   background:
-    linear-gradient(45deg, transparent 50%, var(--gold) 50%) calc(100% - 16px) 50% / 5px 5px no-repeat,
-    linear-gradient(135deg, var(--gold) 50%, transparent 50%) calc(100% - 12px) 50% / 5px 5px no-repeat,
-    rgba(255,255,255,.025);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .11em;
-  cursor: pointer;
+    radial-gradient(circle at 50% 0%, rgba(194,172,126,.075), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,.02), transparent 20%),
+    #090909;
+  box-shadow: 0 45px 130px rgba(0,0,0,.8), 0 0 80px rgba(194,172,126,.035);
+  animation: modeReveal .5s cubic-bezier(.18,.82,.3,1);
 }
 
-.difficulty-control select:hover,
-.difficulty-control select:focus {
-  border-color: rgba(194,172,126,.65);
-  outline: none;
+@keyframes modeReveal {
+  from { opacity: 0; transform: translateY(18px) scale(.975); }
+  to { opacity: 1; transform: none; }
 }
 
-.difficulty-control select:disabled {
-  opacity: .32;
-  cursor: not-allowed;
+.mode-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 22px;
+  padding: 30px 30px 24px;
+  border-bottom: 1px solid var(--line);
 }
 
-.difficulty-hint {
-  color: rgba(194,172,126,.42);
-  font-size: 8px;
-  line-height: 1.4;
-  letter-spacing: .04em;
+.mode-header h2 {
+  max-width: 650px;
+  margin: 8px 0 0;
+  font: 800 clamp(28px, 4vw, 46px)/1 Cinzel, serif;
+  letter-spacing: -.02em;
 }
 
-#aiToggle:disabled + .switch {
-  opacity: .62;
-  border-color: rgba(194,172,126,.42);
-  cursor: not-allowed;
+.mode-intro {
+  max-width: 650px;
+  margin: 11px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
 }
 
-#aiToggle:disabled + .switch::after {
-  background: var(--gold);
-  box-shadow: 0 0 12px rgba(194,172,126,.25);
+.mode-close { flex: 0 0 auto; }
+
+.mode-options {
+  display: grid;
+  gap: 9px;
+  padding: 24px 30px 18px;
 }
 
-@media (max-width: 660px) {
-  .difficulty-control select { min-height: 42px; }
+.mode-option {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 92px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  color: var(--paper);
+  background: rgba(255,255,255,.018);
+  text-align: left;
+  transition: border-color .22s ease, background .22s ease, transform .22s ease;
+}
+
+.mode-option:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: rgba(194,172,126,.04);
+  transform: translateX(2px);
+}
+
+.mode-option.active {
+  border-color: rgba(194,172,126,.58);
+  background: linear-gradient(90deg, rgba(194,172,126,.085), rgba(255,255,255,.015));
+  box-shadow: inset 2px 0 rgba(194,172,126,.65);
+}
+
+.mode-option:disabled { opacity: .34; cursor: not-allowed; }
+.mode-glyph { color: var(--gold); font: 28px/1 Cinzel, serif; text-align: center; }
+.mode-option-copy strong { display: block; font: 800 14px/1.2 Cinzel, serif; letter-spacing: .08em; }
+.mode-option-copy small { display: block; margin-top: 6px; color: var(--muted); font-size: 8px; font-weight: 700; letter-spacing: .17em; }
+.mode-arrow, .mode-badge { color: var(--gold); font-size: 9px; font-weight: 900; letter-spacing: .16em; }
+.mode-badge { color: var(--blood-bright); }
+
+.difficulty-setup {
+  margin: 6px 30px 0;
+  padding: 22px 0 24px;
+  border-top: 1px solid var(--line);
+}
+
+.difficulty-setup[hidden] { display: none; }
+.difficulty-setup-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 15px; margin-bottom: 14px; }
+.difficulty-setup-heading h3 { margin: 6px 0 0; font: 700 15px Cinzel, serif; letter-spacing: .1em; }
+.difficulty-lock-note { color: rgba(194,172,126,.38); font-size: 8px; font-weight: 800; letter-spacing: .15em; }
+
+.difficulty-level-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.difficulty-level {
+  min-height: 88px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  color: var(--paper);
+  background: rgba(255,255,255,.018);
+  text-align: left;
+  transition: .2s ease;
+}
+
+.difficulty-level:hover { border-color: var(--line-strong); background: rgba(194,172,126,.035); }
+.difficulty-level.active { border-color: rgba(194,172,126,.62); background: rgba(194,172,126,.07); }
+.difficulty-level strong { display: block; color: var(--gold-bright); font: 800 11px Cinzel, serif; letter-spacing: .1em; }
+.difficulty-level small { display: block; margin-top: 7px; color: var(--muted); font-size: 8px; line-height: 1.45; letter-spacing: .03em; }
+
+.mode-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 30px 26px;
+  border-top: 1px solid var(--line);
+}
+
+.mode-footer > span { color: rgba(194,172,126,.58); font-size: 8px; font-weight: 900; letter-spacing: .17em; }
+.mode-start { width: auto; min-width: 230px; }
+
+@media (max-width: 700px) {
+  .mode-card { max-height: calc(100vh - 20px); }
+  .mode-header, .mode-options, .mode-footer { padding-left: 18px; padding-right: 18px; }
+  .mode-option { grid-template-columns: 48px 1fr auto; min-height: 82px; }
+  .mode-glyph { font-size: 23px; }
+  .difficulty-setup { margin-left: 18px; margin-right: 18px; }
+  .difficulty-level-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .mode-footer { align-items: stretch; flex-direction: column; }
+  .mode-start { width: 100%; }
 }
