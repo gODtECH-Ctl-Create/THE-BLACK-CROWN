@@ -1,0 +1,9 @@
+project:
+  state: active
+  priority: medium
+  current_focus: "Current mobile/game experience foundation"
+  next_step: "Continue the current app experience only where it supports the product's next validated slice"
+  blockers:
+    - []
+  status_note: "Maintain a small, testable scope and avoid speculative expansion."
+  last_worked_on: "2026-10-04"
